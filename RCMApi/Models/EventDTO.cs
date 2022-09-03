@@ -1,8 +1,8 @@
 ﻿namespace RCMAppApi.Models
 {
-    public class Event : BaseDomainEntity
+    public class EventDTO : BaseDomainEntity
     {
-        public Event()
+        public EventDTO()
         {
         }
         public string? EventName { get; set; }
@@ -12,7 +12,5 @@
         public string? Venue { get; set; }
         public DateTime? RSVPCloseDate { get; set; }
         public DateTime? EventDate { get; set; }
-        //DTO Model integration
-        public string? Secret { get; set; }
     }
 }

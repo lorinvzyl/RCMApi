@@ -119,5 +119,15 @@ namespace RCMAppApi.Controllers
         {
             return (_context.Donations?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        private static DonationDTO donationDTO(Donation donation) =>
+            new DonationDTO
+            {
+                Id = donation.Id,
+                Date = donation.Date,
+                Amount = donation.Amount,
+                Message = donation.Message,
+                UserId = donation.UserId
+            };
     }
 }

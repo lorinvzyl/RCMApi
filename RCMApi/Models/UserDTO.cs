@@ -1,8 +1,8 @@
 ﻿namespace RCMAppApi.Models
 {
-    public class User : BaseDomainEntity
+    public class UserDTO : BaseDomainEntity
     {
-        public User()
+        public UserDTO()
         {
         }
         public string? Name { get; set; }
@@ -14,7 +14,5 @@
         public string? HashedPassword { get; set; }
         public int? Iterations { get; set; }
         public int? MemoryLimit { get; set; }
-        //DTO Model integration
-        public string? Secret { get; set; }
     }
 }

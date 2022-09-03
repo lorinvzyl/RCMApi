@@ -1,13 +1,11 @@
 ﻿namespace RCMAppApi.Models
 {
-    public class Role : BaseDomainEntity
+    public class RoleDTO : BaseDomainEntity
     {
-        public Role()
+        public RoleDTO()
         {
         }
         public string? Name { get; set; }
         public string? Description { get; set; }
-        //DTO Model integration
-        public string? Secret { get; set; }
     }
 }

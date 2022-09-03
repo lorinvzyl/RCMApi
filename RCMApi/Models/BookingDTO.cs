@@ -1,15 +1,13 @@
 ﻿namespace RCMAppApi.Models
 {
-    public class Booking : BaseDomainEntity
+    public class BookingDTO : BaseDomainEntity
     {
-        public Booking()
+        public BookingDTO()
         {
 
         }
         public int? UserId { get; set; }
         public DateTime? Date { get; set; }
         public string? Description { get; set; }
-        //DTO Model integration
-        public string? Secret { get; set; }
     }
 }

@@ -119,5 +119,14 @@ namespace RCMAppApi.Controllers
         {
             return (_context.Booking?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        private static BookingDTO bookingDTO(Booking booking) =>
+            new BookingDTO
+            {
+                Id = booking.Id,
+                Date = booking.Date,
+                Description = booking.Description,
+                UserId = booking.UserId
+            };
     }
 }

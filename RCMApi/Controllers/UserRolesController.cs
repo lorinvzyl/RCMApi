@@ -119,5 +119,13 @@ namespace RCMAppApi.Controllers
         {
             return (_context.UserRoles?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        private static UserRoleDTO userRoleDTO(UserRole userRole) =>
+            new UserRoleDTO
+            {
+                Id = userRole.Id,
+                RoleId = userRole.RoleId,
+                UserId = userRole.UserId
+            };
     }
 }

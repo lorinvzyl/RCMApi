@@ -119,5 +119,20 @@ namespace RCMAppApi.Controllers
         {
             return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        private static UserDTO userDTO(User user) =>
+            new UserDTO
+            {
+                Id = user.Id,
+                DateOfBirth = user.DateOfBirth,
+                Email = user.Email,
+                Name = user.Name,
+                IsNewsletter = user.IsNewsletter,
+                Surname = user.Surname,
+                Token = user.Token,
+                HashedPassword = user.HashedPassword,
+                MemoryLimit = user.MemoryLimit,
+                Iterations = user.Iterations
+            };
     }
 }

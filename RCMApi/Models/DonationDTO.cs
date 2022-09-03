@@ -1,8 +1,8 @@
 ﻿namespace RCMAppApi.Models
 {
-    public class Donation : BaseDomainEntity
+    public class DonationDTO : BaseDomainEntity
     {
-        public Donation()
+        public DonationDTO()
         {
 
         }
@@ -10,7 +10,5 @@
         public int? UserId { get; set; }
         public double? Amount { get; set; }
         public DateTime? Date { get; set; }
-        //DTO Model integration
-        public string? Secret { get; set; }
     }
 }

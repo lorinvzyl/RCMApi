@@ -119,5 +119,18 @@ namespace RCMAppApi.Controllers
         {
             return (_context.Comments?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        private static CommentDTO commentDTO(Comment comment) =>
+            new CommentDTO
+            {
+                Id = comment.Id,
+                CommentId = comment.Id,
+                BlogId = comment.BlogId,
+                UserId = comment.UserId,
+                Replies = comment.Replies,
+                CommentText = comment.CommentText,
+                VideoId = comment.VideoId,
+                Parent = comment.Parent
+            };
     }
 }

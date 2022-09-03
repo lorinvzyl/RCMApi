@@ -119,5 +119,15 @@ namespace RCMAppApi.Controllers
         {
             return (_context.Videos?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        private static VideoDTO videoDTO(Video video) =>
+            new VideoDTO
+            {
+                Id = video.Id,
+                VideoComments = video.VideoComments,
+                VideoDescription = video.VideoDescription,
+                VideoTitle = video.VideoTitle,
+                VideoURL = video.VideoURL
+            };
     }
 }
