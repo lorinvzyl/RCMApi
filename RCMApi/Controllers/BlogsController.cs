@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RCMAppApi.Models;
 
-namespace RCMAppApi.Controllers
+namespace RCMApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -119,5 +119,15 @@ namespace RCMAppApi.Controllers
         {
             return (_context.Blogs?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        private static BlogDTO BlogDTO(Blog blog) =>
+            new BlogDTO
+            {
+                Id = blog.Id,
+                Content = blog.Content,
+                ImagePath = blog.ImagePath,
+                Description = blog.Description,
+                BlogTitle = blog.BlogTitle
+            };
     }
 }

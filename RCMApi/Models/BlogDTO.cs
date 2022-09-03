@@ -2,19 +2,14 @@
 
 namespace RCMAppApi.Models
 {
-    public class Blog : BaseDomainEntity
+    public class BlogDTO : BaseDomainEntity
     {
-        public Blog()
+        public BlogDTO()
         {
         }
         public string? BlogTitle { get; set; }
         public string? Content { get; set; }
         public string? Description { get; set; }
         public string? ImagePath { get; set; }
-        public int? UserId { get; set; }
-        public ICollection<Comment> Comments { get; set; }
-
-        /*DTO Model integration
-        public string? Secret { get; set; }*/
     }
 }

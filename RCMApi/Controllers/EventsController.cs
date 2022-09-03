@@ -24,10 +24,10 @@ namespace RCMAppApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Event>>> GetEvents()
         {
-          if (_context.Events == null)
-          {
-              return NotFound();
-          }
+            if (_context.Events == null)
+            {
+                return NotFound();
+            }
             return await _context.Events.ToListAsync();
         }
 
@@ -35,10 +35,10 @@ namespace RCMAppApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Event>> GetEvent(int id)
         {
-          if (_context.Events == null)
-          {
-              return NotFound();
-          }
+            if (_context.Events == null)
+            {
+                return NotFound();
+            }
             var @event = await _context.Events.FindAsync(id);
 
             if (@event == null)
@@ -85,10 +85,10 @@ namespace RCMAppApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Event>> PostEvent(Event @event)
         {
-          if (_context.Events == null)
-          {
-              return Problem("Entity set 'DataContext.Events'  is null.");
-          }
+            if (_context.Events == null)
+            {
+                return Problem("Entity set 'DataContext.Events'  is null.");
+            }
             _context.Events.Add(@event);
             await _context.SaveChangesAsync();
 
@@ -119,5 +119,18 @@ namespace RCMAppApi.Controllers
         {
             return (_context.Events?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        private static EventDTO eventDTO(Event _event) =>
+            new EventDTO
+            {
+                Id = _event.Id,
+                EventDate = _event.EventDate,
+                EventDescription = _event.EventDescription,
+                EventName = _event.EventName,
+                RSVPCloseDate = _event.RSVPCloseDate,
+                SpacesAvailable = _event.SpacesAvailable,
+                SpacesTaken = _event.SpacesTaken,
+                Venue = _event.Venue
+            };
     }
 }

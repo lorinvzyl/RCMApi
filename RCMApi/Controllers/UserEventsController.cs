@@ -119,5 +119,12 @@ namespace RCMAppApi.Controllers
         {
             return (_context.UserEvents?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        private static UserEventDTO userEventDTO(UserEvent userEvent) =>
+            new UserEventDTO
+            {
+                Id = userEvent.Id,
+                IsAttended = userEvent.IsAttended
+            };
     }
 }
