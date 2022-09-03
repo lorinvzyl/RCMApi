@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RCMAppApi.Models;
 
-namespace RCMAppApi.Controllers
+namespace RCMApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -22,24 +22,24 @@ namespace RCMAppApi.Controllers
 
         // GET: api/Bookings
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Booking>>> GetBooking()
+        public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
         {
-          if (_context.Booking == null)
+          if (_context.Bookings == null)
           {
               return NotFound();
           }
-            return await _context.Booking.ToListAsync();
+            return await _context.Bookings.ToListAsync();
         }
 
         // GET: api/Bookings/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Booking>> GetBooking(int id)
         {
-          if (_context.Booking == null)
+          if (_context.Bookings == null)
           {
               return NotFound();
           }
-            var booking = await _context.Booking.FindAsync(id);
+            var booking = await _context.Bookings.FindAsync(id);
 
             if (booking == null)
             {
@@ -85,11 +85,11 @@ namespace RCMAppApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Booking>> PostBooking(Booking booking)
         {
-          if (_context.Booking == null)
+          if (_context.Bookings == null)
           {
-              return Problem("Entity set 'DataContext.Booking'  is null.");
+              return Problem("Entity set 'DataContext.Bookings'  is null.");
           }
-            _context.Booking.Add(booking);
+            _context.Bookings.Add(booking);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetBooking", new { id = booking.Id }, booking);
@@ -99,17 +99,17 @@ namespace RCMAppApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBooking(int id)
         {
-            if (_context.Booking == null)
+            if (_context.Bookings == null)
             {
                 return NotFound();
             }
-            var booking = await _context.Booking.FindAsync(id);
+            var booking = await _context.Bookings.FindAsync(id);
             if (booking == null)
             {
                 return NotFound();
             }
 
-            _context.Booking.Remove(booking);
+            _context.Bookings.Remove(booking);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,16 +117,16 @@ namespace RCMAppApi.Controllers
 
         private bool BookingExists(int id)
         {
-            return (_context.Booking?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Bookings?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        private static BookingDTO bookingDTO(Booking booking) =>
+        private static BookingDTO BookingDTO(Booking booking) =>
             new BookingDTO
             {
                 Id = booking.Id,
-                Date = booking.Date,
                 Description = booking.Description,
-                UserId = booking.UserId
+                UserId = booking.UserId,
+                Date = booking.Date
             };
     }
 }

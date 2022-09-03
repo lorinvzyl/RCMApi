@@ -124,7 +124,6 @@ namespace RCMAppApi.Controllers
             new RoleDTO
             {
                 Id = role.Id,
-                UserRoles = role.UserRoles,
                 Name = role.Name,
                 Description = role.Description
             };

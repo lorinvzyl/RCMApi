@@ -124,7 +124,6 @@ namespace RCMAppApi.Controllers
             new VideoDTO
             {
                 Id = video.Id,
-                VideoComments = video.VideoComments,
                 VideoDescription = video.VideoDescription,
                 VideoTitle = video.VideoTitle,
                 VideoURL = video.VideoURL

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RCMAppApi.Models;
 
-namespace RCMAppApi.Controllers
+namespace RCMApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -120,17 +120,15 @@ namespace RCMAppApi.Controllers
             return (_context.Comments?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        private static CommentDTO commentDTO(Comment comment) =>
+        private static CommentDTO CommentDTO(Comment comment) =>
             new CommentDTO
             {
                 Id = comment.Id,
                 CommentId = comment.Id,
-                BlogId = comment.BlogId,
-                UserId = comment.UserId,
-                Replies = comment.Replies,
                 CommentText = comment.CommentText,
-                VideoId = comment.VideoId,
-                Parent = comment.Parent
+                BlogId = comment.BlogId,
+                VideoId = comment.VideoId, 
+                UserId = comment.UserId
             };
     }
 }

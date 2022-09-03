@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RCMAppApi.Models;
 
-namespace RCMAppApi.Controllers
+namespace RCMApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -22,18 +22,18 @@ namespace RCMAppApi.Controllers
 
         // GET: api/Blogs
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BlogDTO>>> GetBlogs()
+        public async Task<ActionResult<IEnumerable<Blog>>> GetBlogs()
         {
           if (_context.Blogs == null)
           {
               return NotFound();
           }
-            return await _context.Blogs.Select(x => BlogDTO(x)).ToListAsync();
+            return await _context.Blogs.ToListAsync();
         }
 
         // GET: api/Blogs/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<BlogDTO>> GetBlog(int id)
+        public async Task<ActionResult<Blog>> GetBlog(int id)
         {
           if (_context.Blogs == null)
           {
@@ -46,30 +46,20 @@ namespace RCMAppApi.Controllers
                 return NotFound();
             }
 
-            return BlogDTO(blog);
+            return blog;
         }
 
         // PUT: api/Blogs/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBlog(int id, BlogDTO blogDTO)
+        public async Task<IActionResult> PutBlog(int id, Blog blog)
         {
-            if (id != blogDTO.Id)
+            if (id != blog.Id)
             {
                 return BadRequest();
             }
 
-            var Blog = await _context.Blogs.FindAsync(id);
-            if(Blog == null)
-            {
-                return NotFound();
-            }
-
-            Blog.BlogTitle = blogDTO.BlogTitle;
-            Blog.Content = blogDTO.Content;
-            Blog.Description = blogDTO.Description;
-            Blog.ImagePath = blogDTO.ImagePath;
-            Blog.UserId = blogDTO.UserId;
+            _context.Entry(blog).State = EntityState.Modified;
 
             try
             {
@@ -93,25 +83,16 @@ namespace RCMAppApi.Controllers
         // POST: api/Blogs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<BlogDTO>> PostBlog(BlogDTO blogDTO)
+        public async Task<ActionResult<Blog>> PostBlog(Blog blog)
         {
-            var blog = new Blog
-            {
-                BlogTitle = blogDTO.BlogTitle,
-                Content = blogDTO.Content,
-                Description = blogDTO.Description,
-                ImagePath = blogDTO.ImagePath,
-                UserId = blogDTO.UserId
-            };
-
-            if (_context.Blogs == null)
-            {
-                return Problem("Entity set 'DataContext.Blogs'  is null.");
-            }
+          if (_context.Blogs == null)
+          {
+              return Problem("Entity set 'DataContext.Blogs'  is null.");
+          }
             _context.Blogs.Add(blog);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetBlog", new { id = blog.Id }, BlogDTO(blog));
+            return CreatedAtAction("GetBlog", new { id = blog.Id }, blog);
         }
 
         // DELETE: api/Blogs/5
@@ -143,11 +124,11 @@ namespace RCMAppApi.Controllers
             new BlogDTO
             {
                 Id = blog.Id,
-                BlogTitle = blog.BlogTitle,
                 Content = blog.Content,
                 ImagePath = blog.ImagePath,
                 Description = blog.Description,
-                UserId = blog.UserId
+                UserId = blog.UserId,
+                BlogTitle = blog.BlogTitle
             };
     }
 }

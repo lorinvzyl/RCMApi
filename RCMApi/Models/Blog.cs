@@ -8,12 +8,13 @@ namespace RCMAppApi.Models
         {
         }
         public string? BlogTitle { get; set; }
-        [Column(TypeName = "text")]
         public string? Content { get; set; }
         public string? Description { get; set; }
         public string? ImagePath { get; set; }
         public int? UserId { get; set; }
-        //DTO Model integration
-        public string? Secret { get; set; }
+        public ICollection<Comment> Comments { get; set; }
+
+        /*DTO Model integration
+        public string? Secret { get; set; }*/
     }
 }

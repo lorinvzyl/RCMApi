@@ -4,6 +4,7 @@
     {
         public Event()
         {
+            Attendees = new HashSet<UserEvent>();
         }
         public string? EventName { get; set; }
         public string? EventDescription { get; set; }
@@ -12,7 +13,8 @@
         public string? Venue { get; set; }
         public DateTime? RSVPCloseDate { get; set; }
         public DateTime? EventDate { get; set; }
-        //DTO Model integration
-        public string? Secret { get; set; }
+        public ICollection<UserEvent> Attendees;
+        /*DTO Model integration
+        public string? Secret { get; set; }*/
     }
 }
