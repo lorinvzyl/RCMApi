@@ -124,11 +124,7 @@ namespace RCMApi.Controllers
             new CommentDTO
             {
                 Id = comment.Id,
-                CommentId = comment.Id,
                 CommentText = comment.CommentText,
-                BlogId = comment.BlogId,
-                VideoId = comment.VideoId, 
-                UserId = comment.UserId
             };
     }
 }

@@ -125,7 +125,6 @@ namespace RCMApi.Controllers
             {
                 Id = booking.Id,
                 Description = booking.Description,
-                UserId = booking.UserId,
                 Date = booking.Date
             };
     }

@@ -126,8 +126,7 @@ namespace RCMAppApi.Controllers
                 Id = donation.Id,
                 Date = donation.Date,
                 Amount = donation.Amount,
-                Message = donation.Message,
-                UserId = donation.UserId
+                Message = donation.Message
             };
     }
 }

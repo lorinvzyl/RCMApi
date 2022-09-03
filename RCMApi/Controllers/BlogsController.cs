@@ -127,7 +127,6 @@ namespace RCMApi.Controllers
                 Content = blog.Content,
                 ImagePath = blog.ImagePath,
                 Description = blog.Description,
-                UserId = blog.UserId,
                 BlogTitle = blog.BlogTitle
             };
     }
