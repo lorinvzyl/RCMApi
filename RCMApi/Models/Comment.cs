@@ -11,7 +11,7 @@
         public int? CommentId { get; set; }
         public int? VideoId { get; set; }
         public int? BlogId { get; set; }
-        public ICollection<Comment> Replies { get; set; }
+
         /*DTO Model integration
         public string? Secret { get; set; }*/
     }

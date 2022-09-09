@@ -12,7 +12,6 @@ namespace RCMAppApi.Models
         public string? Description { get; set; }
         public string? ImagePath { get; set; }
         public int? UserId { get; set; }
-        public ICollection<Comment> Comments { get; set; }
 
         /*DTO Model integration
         public string? Secret { get; set; }*/
