@@ -4,7 +4,6 @@
     {
         public Comment()
         {
-            Replies = new HashSet<Comment>();
         }
         public string? CommentText { get; set; }
         public int? UserId { get; set; }
