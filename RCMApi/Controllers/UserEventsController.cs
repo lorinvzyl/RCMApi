@@ -24,22 +24,22 @@ namespace RCMAppApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserEvent>>> GetUserEvents()
         {
-          if (_context.UserEvents == null)
+          if (_context.UserEvent == null)
           {
               return NotFound();
           }
-            return await _context.UserEvents.ToListAsync();
+            return await _context.UserEvent.ToListAsync();
         }
 
         // GET: api/UserEvents/5
         [HttpGet("{id}")]
         public async Task<ActionResult<UserEvent>> GetUserEvent(int id)
         {
-          if (_context.UserEvents == null)
+          if (_context.UserEvent == null)
           {
               return NotFound();
           }
-            var userEvent = await _context.UserEvents.FindAsync(id);
+            var userEvent = await _context.UserEvent.FindAsync(id);
 
             if (userEvent == null)
             {
@@ -85,11 +85,11 @@ namespace RCMAppApi.Controllers
         [HttpPost]
         public async Task<ActionResult<UserEvent>> PostUserEvent(UserEvent userEvent)
         {
-          if (_context.UserEvents == null)
+          if (_context.UserEvent == null)
           {
               return Problem("Entity set 'DataContext.UserEvents'  is null.");
           }
-            _context.UserEvents.Add(userEvent);
+            _context.UserEvent.Add(userEvent);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetUserEvent", new { id = userEvent.Id }, userEvent);
@@ -99,17 +99,17 @@ namespace RCMAppApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserEvent(int id)
         {
-            if (_context.UserEvents == null)
+            if (_context.UserEvent == null)
             {
                 return NotFound();
             }
-            var userEvent = await _context.UserEvents.FindAsync(id);
+            var userEvent = await _context.UserEvent.FindAsync(id);
             if (userEvent == null)
             {
                 return NotFound();
             }
 
-            _context.UserEvents.Remove(userEvent);
+            _context.UserEvent.Remove(userEvent);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,7 +117,7 @@ namespace RCMAppApi.Controllers
 
         private bool UserEventExists(int id)
         {
-            return (_context.UserEvents?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.UserEvent?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
         private static UserEventDTO userEventDTO(UserEvent userEvent) =>

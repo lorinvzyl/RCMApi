@@ -24,22 +24,22 @@ namespace RCMAppApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Role>>> GetRoles()
         {
-          if (_context.Roles == null)
+          if (_context.Role == null)
           {
               return NotFound();
           }
-            return await _context.Roles.ToListAsync();
+            return await _context.Role.ToListAsync();
         }
 
         // GET: api/Roles/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Role>> GetRole(int id)
         {
-          if (_context.Roles == null)
+          if (_context.Role == null)
           {
               return NotFound();
           }
-            var role = await _context.Roles.FindAsync(id);
+            var role = await _context.Role.FindAsync(id);
 
             if (role == null)
             {
@@ -85,11 +85,11 @@ namespace RCMAppApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Role>> PostRole(Role role)
         {
-          if (_context.Roles == null)
+          if (_context.Role == null)
           {
               return Problem("Entity set 'DataContext.Roles'  is null.");
           }
-            _context.Roles.Add(role);
+            _context.Role.Add(role);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetRole", new { id = role.Id }, role);
@@ -99,17 +99,17 @@ namespace RCMAppApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRole(int id)
         {
-            if (_context.Roles == null)
+            if (_context.Role == null)
             {
                 return NotFound();
             }
-            var role = await _context.Roles.FindAsync(id);
+            var role = await _context.Role.FindAsync(id);
             if (role == null)
             {
                 return NotFound();
             }
 
-            _context.Roles.Remove(role);
+            _context.Role.Remove(role);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,7 +117,7 @@ namespace RCMAppApi.Controllers
 
         private bool RoleExists(int id)
         {
-            return (_context.Roles?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Role?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
         private static RoleDTO roleDTO(Role role) =>

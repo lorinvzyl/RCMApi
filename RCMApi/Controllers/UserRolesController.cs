@@ -24,22 +24,22 @@ namespace RCMAppApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserRole>>> GetUserRoles()
         {
-          if (_context.UserRoles == null)
+          if (_context.UserRole == null)
           {
               return NotFound();
           }
-            return await _context.UserRoles.ToListAsync();
+            return await _context.UserRole.ToListAsync();
         }
 
         // GET: api/UserRoles/5
         [HttpGet("{id}")]
         public async Task<ActionResult<UserRole>> GetUserRole(int id)
         {
-          if (_context.UserRoles == null)
+          if (_context.UserRole == null)
           {
               return NotFound();
           }
-            var userRole = await _context.UserRoles.FindAsync(id);
+            var userRole = await _context.UserRole.FindAsync(id);
 
             if (userRole == null)
             {
@@ -85,11 +85,11 @@ namespace RCMAppApi.Controllers
         [HttpPost]
         public async Task<ActionResult<UserRole>> PostUserRole(UserRole userRole)
         {
-          if (_context.UserRoles == null)
+          if (_context.UserRole == null)
           {
               return Problem("Entity set 'DataContext.UserRoles'  is null.");
           }
-            _context.UserRoles.Add(userRole);
+            _context.UserRole.Add(userRole);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetUserRole", new { id = userRole.Id }, userRole);
@@ -99,17 +99,17 @@ namespace RCMAppApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserRole(int id)
         {
-            if (_context.UserRoles == null)
+            if (_context.UserRole == null)
             {
                 return NotFound();
             }
-            var userRole = await _context.UserRoles.FindAsync(id);
+            var userRole = await _context.UserRole.FindAsync(id);
             if (userRole == null)
             {
                 return NotFound();
             }
 
-            _context.UserRoles.Remove(userRole);
+            _context.UserRole.Remove(userRole);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,7 +117,7 @@ namespace RCMAppApi.Controllers
 
         private bool UserRoleExists(int id)
         {
-            return (_context.UserRoles?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.UserRole?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

@@ -24,22 +24,22 @@ namespace RCMApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Blog>>> GetBlogs()
         {
-          if (_context.Blogs == null)
+          if (_context.Blog == null)
           {
               return NotFound();
           }
-            return await _context.Blogs.ToListAsync();
+            return await _context.Blog.ToListAsync();
         }
 
         // GET: api/Blogs/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Blog>> GetBlog(int id)
         {
-          if (_context.Blogs == null)
+          if (_context.Blog == null)
           {
               return NotFound();
           }
-            var blog = await _context.Blogs.FindAsync(id);
+            var blog = await _context.Blog.FindAsync(id);
 
             if (blog == null)
             {
@@ -85,11 +85,11 @@ namespace RCMApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Blog>> PostBlog(Blog blog)
         {
-          if (_context.Blogs == null)
+          if (_context.Blog == null)
           {
               return Problem("Entity set 'DataContext.Blogs'  is null.");
           }
-            _context.Blogs.Add(blog);
+            _context.Blog.Add(blog);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetBlog", new { id = blog.Id }, blog);
@@ -99,17 +99,17 @@ namespace RCMApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBlog(int id)
         {
-            if (_context.Blogs == null)
+            if (_context.Blog == null)
             {
                 return NotFound();
             }
-            var blog = await _context.Blogs.FindAsync(id);
+            var blog = await _context.Blog.FindAsync(id);
             if (blog == null)
             {
                 return NotFound();
             }
 
-            _context.Blogs.Remove(blog);
+            _context.Blog.Remove(blog);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,7 +117,7 @@ namespace RCMApi.Controllers
 
         private bool BlogExists(int id)
         {
-            return (_context.Blogs?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Blog?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
         private static BlogDTO BlogDTO(Blog blog) =>

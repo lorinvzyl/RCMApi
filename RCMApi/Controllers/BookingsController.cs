@@ -24,22 +24,22 @@ namespace RCMApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
         {
-          if (_context.Bookings == null)
+          if (_context.Booking == null)
           {
               return NotFound();
           }
-            return await _context.Bookings.ToListAsync();
+            return await _context.Booking.ToListAsync();
         }
 
         // GET: api/Bookings/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Booking>> GetBooking(int id)
         {
-          if (_context.Bookings == null)
+          if (_context.Booking == null)
           {
               return NotFound();
           }
-            var booking = await _context.Bookings.FindAsync(id);
+            var booking = await _context.Booking.FindAsync(id);
 
             if (booking == null)
             {
@@ -85,11 +85,11 @@ namespace RCMApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Booking>> PostBooking(Booking booking)
         {
-          if (_context.Bookings == null)
+          if (_context.Booking == null)
           {
               return Problem("Entity set 'DataContext.Bookings'  is null.");
           }
-            _context.Bookings.Add(booking);
+            _context.Booking.Add(booking);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetBooking", new { id = booking.Id }, booking);
@@ -99,17 +99,17 @@ namespace RCMApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBooking(int id)
         {
-            if (_context.Bookings == null)
+            if (_context.Booking == null)
             {
                 return NotFound();
             }
-            var booking = await _context.Bookings.FindAsync(id);
+            var booking = await _context.Booking.FindAsync(id);
             if (booking == null)
             {
                 return NotFound();
             }
 
-            _context.Bookings.Remove(booking);
+            _context.Booking.Remove(booking);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,7 +117,7 @@ namespace RCMApi.Controllers
 
         private bool BookingExists(int id)
         {
-            return (_context.Bookings?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Booking?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
         private static BookingDTO BookingDTO(Booking booking) =>

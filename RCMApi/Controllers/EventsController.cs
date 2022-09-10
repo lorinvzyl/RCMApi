@@ -24,22 +24,22 @@ namespace RCMAppApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Event>>> GetEvents()
         {
-            if (_context.Events == null)
+            if (_context.Event == null)
             {
                 return NotFound();
             }
-            return await _context.Events.ToListAsync();
+            return await _context.Event.ToListAsync();
         }
 
         // GET: api/Events/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Event>> GetEvent(int id)
         {
-            if (_context.Events == null)
+            if (_context.Event == null)
             {
                 return NotFound();
             }
-            var @event = await _context.Events.FindAsync(id);
+            var @event = await _context.Event.FindAsync(id);
 
             if (@event == null)
             {
@@ -85,11 +85,11 @@ namespace RCMAppApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Event>> PostEvent(Event @event)
         {
-            if (_context.Events == null)
+            if (_context.Event == null)
             {
                 return Problem("Entity set 'DataContext.Events'  is null.");
             }
-            _context.Events.Add(@event);
+            _context.Event.Add(@event);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetEvent", new { id = @event.Id }, @event);
@@ -99,17 +99,17 @@ namespace RCMAppApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEvent(int id)
         {
-            if (_context.Events == null)
+            if (_context.Event == null)
             {
                 return NotFound();
             }
-            var @event = await _context.Events.FindAsync(id);
+            var @event = await _context.Event.FindAsync(id);
             if (@event == null)
             {
                 return NotFound();
             }
 
-            _context.Events.Remove(@event);
+            _context.Event.Remove(@event);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,7 +117,7 @@ namespace RCMAppApi.Controllers
 
         private bool EventExists(int id)
         {
-            return (_context.Events?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Event?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
         private static EventDTO eventDTO(Event _event) =>

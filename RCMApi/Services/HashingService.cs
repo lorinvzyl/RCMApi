@@ -14,6 +14,12 @@ namespace RCMAppApi.Services
             //Assign values as needed here from the database or use a non-default constructor.
         }
 
+        public HashingService(byte[] enteredPassword, byte[] hashedPassword)
+        {
+            _hash = hashedPassword;
+            password = enteredPassword;
+        }
+
         //will be used to pass hash into database.
         private readonly byte[]? hash;
         //needs to be span<byte>
@@ -42,16 +48,16 @@ namespace RCMAppApi.Services
 
         //Will make necessary calls to the database to verify password.
         //User's hashed password
-        public void VerifyHash()
+        public bool VerifyHash()
         {
-            Argon2id.VerifyHash(HashDb, Password);
+            return Argon2id.VerifyHash(HashDb, Password);
         }
 
         //Will make necessary calls to the database to check if the user's hashed password is outdated.
         //Needs the user's hashed password, iterations and memorysize.
-        public void NeedsRehash()
+        public bool NeedsRehash()
         {
-            Argon2id.NeedsRehash(HashDb, iterations, memorySize);
+            return Argon2id.NeedsRehash(HashDb, iterations, memorySize);
         }
     }
 }

@@ -24,22 +24,22 @@ namespace RCMApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Comment>>> GetComments()
         {
-          if (_context.Comments == null)
+          if (_context.Comment == null)
           {
               return NotFound();
           }
-            return await _context.Comments.ToListAsync();
+            return await _context.Comment.ToListAsync();
         }
 
         // GET: api/Comments/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Comment>> GetComment(int id)
         {
-          if (_context.Comments == null)
+          if (_context.Comment == null)
           {
               return NotFound();
           }
-            var comment = await _context.Comments.FindAsync(id);
+            var comment = await _context.Comment.FindAsync(id);
 
             if (comment == null)
             {
@@ -85,11 +85,11 @@ namespace RCMApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Comment>> PostComment(Comment comment)
         {
-          if (_context.Comments == null)
+          if (_context.Comment == null)
           {
               return Problem("Entity set 'DataContext.Comments'  is null.");
           }
-            _context.Comments.Add(comment);
+            _context.Comment.Add(comment);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetComment", new { id = comment.Id }, comment);
@@ -99,17 +99,17 @@ namespace RCMApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteComment(int id)
         {
-            if (_context.Comments == null)
+            if (_context.Comment == null)
             {
                 return NotFound();
             }
-            var comment = await _context.Comments.FindAsync(id);
+            var comment = await _context.Comment.FindAsync(id);
             if (comment == null)
             {
                 return NotFound();
             }
 
-            _context.Comments.Remove(comment);
+            _context.Comment.Remove(comment);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,7 +117,7 @@ namespace RCMApi.Controllers
 
         private bool CommentExists(int id)
         {
-            return (_context.Comments?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Comment?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
         private static CommentDTO CommentDTO(Comment comment) =>
