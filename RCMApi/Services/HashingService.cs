@@ -20,8 +20,13 @@ namespace RCMAppApi.Services
             password = enteredPassword;
         }
 
+        public HashingService(byte[] enteredPassword)
+        {
+            password = enteredPassword;
+        }
+
         //will be used to pass hash into database.
-        private readonly byte[]? hash;
+        private byte[]? hash = new byte[128];
         //needs to be span<byte>
         public Span<byte> Hash => hash;
 

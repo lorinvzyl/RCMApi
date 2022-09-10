@@ -51,7 +51,7 @@ namespace RCMAppApi.Controllers
             return user;
         }
 
-        [HttpGet("email={email}&password={password}")]
+        [HttpPost("email={email}&password={password}")]
         public async Task<ActionResult> LoginUser(string email, string password)
         {
             if (_context.User == null)
@@ -61,10 +61,10 @@ namespace RCMAppApi.Controllers
             if (user == null)
                 return NotFound();
 
-            byte[] passwordIn = Encoding.Unicode.GetBytes(password);
-            byte[] hashedPassword = Encoding.Unicode.GetBytes(user.HashedPassword);
+            byte[] passwordIn = Encoding.UTF8.GetBytes(password);
+            byte[] hashedPassword = user.HashedPassword;
 
-            HashingService hashingService = new HashingService(passwordIn, hashedPassword);
+            HashingService hashingService = new(passwordIn, hashedPassword);
             bool login = hashingService.VerifyHash();
 
             return CreatedAtAction("LoginUser", login);
@@ -118,16 +118,22 @@ namespace RCMAppApi.Controllers
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<User>> PostUser(User user, string password)
         {
           if (_context.User == null)
           {
               return Problem("Entity set 'DataContext.Users'  is null.");
           }
+            byte[] hashingPassword = Encoding.UTF8.GetBytes(password);
+            HashingService hashingService = new(hashingPassword);
+            hashingService.HashPassword();
+            user.HashedPassword = hashingService.Hash.ToArray();
+            user.Iterations = hashingService.iterations;
+            user.MemoryLimit = hashingService.memorySize;
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            return CreatedAtAction("PostUser", new { id = user.Id }, user);
         }
 
         // DELETE: api/Users/5
@@ -155,8 +161,8 @@ namespace RCMAppApi.Controllers
             return (_context.User?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        private static UserDTO userDTO(User user) =>
-            new UserDTO
+        private static UserDTO UserDTO(User user) =>
+            new()
             {
                 Id = user.Id,
                 DateOfBirth = user.DateOfBirth,

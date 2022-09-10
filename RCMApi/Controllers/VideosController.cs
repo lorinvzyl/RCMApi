@@ -49,6 +49,17 @@ namespace RCMAppApi.Controllers
             return video;
         }
 
+        [HttpGet("Last")]
+        public async Task<ActionResult<IEnumerable<Video>>> GetLastVideo()
+        {
+            if (_context.Video == null)
+                return NotFound();
+
+            Video lastVideo = _context.Video.OrderByDescending(x => x.DateCreated).FirstOrDefault();
+
+            return CreatedAtAction("GetLastVideo", lastVideo);
+        }
+
         // PUT: api/Videos/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -120,8 +131,8 @@ namespace RCMAppApi.Controllers
             return (_context.Video?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        private static VideoDTO videoDTO(Video video) =>
-            new VideoDTO
+        private static VideoDTO VideoDTO(Video video) =>
+            new()
             {
                 Id = video.Id,
                 VideoDescription = video.VideoDescription,
