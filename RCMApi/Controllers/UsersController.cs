@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using RCMApi.Models;
 using RCMAppApi.Models;
 using RCMAppApi.Services;
 
@@ -118,18 +120,34 @@ namespace RCMAppApi.Controllers
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user, string password)
+        public async Task<ActionResult<User>> PostUser([FromBody] UserString userString)
         {
-          if (_context.User == null)
-          {
-              return Problem("Entity set 'DataContext.Users'  is null.");
-          }
-            byte[] hashingPassword = Encoding.UTF8.GetBytes(password);
-            HashingService hashingService = new(hashingPassword);
+            if (_context.User == null)
+            {
+                return Problem("Entity set 'DataContext.Users'  is null.");
+            }
+            if (userString.HashedPassword == null)
+                return Problem("No password entered");
+
+            User user = new()
+            {
+                Email = userString.Email,
+                Name = userString.Name,
+                Surname = userString.Surname,
+                DateOfBirth = userString.DateOfBirth,
+                HashedPassword = Encoding.UTF8.GetBytes(userString.HashedPassword)
+            };
+
+            user.IsNewsletter = false;
+            user.IsDeleted = false;
+            user.IsActive = true;
+
+            HashingService hashingService = new(user.HashedPassword);
             hashingService.HashPassword();
             user.HashedPassword = hashingService.Hash.ToArray();
             user.Iterations = hashingService.iterations;
             user.MemoryLimit = hashingService.memorySize;
+
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 
@@ -164,7 +182,6 @@ namespace RCMAppApi.Controllers
         private static UserDTO UserDTO(User user) =>
             new()
             {
-                Id = user.Id,
                 DateOfBirth = user.DateOfBirth,
                 Email = user.Email,
                 Name = user.Name,
