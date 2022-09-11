@@ -123,7 +123,6 @@ namespace RCMAppApi.Controllers
         private static DonationDTO donationDTO(Donation donation) =>
             new DonationDTO
             {
-                Id = donation.Id,
                 Date = donation.Date,
                 Amount = donation.Amount,
                 Message = donation.Message

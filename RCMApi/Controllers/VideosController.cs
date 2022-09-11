@@ -134,7 +134,6 @@ namespace RCMAppApi.Controllers
         private static VideoDTO VideoDTO(Video video) =>
             new()
             {
-                Id = video.Id,
                 VideoDescription = video.VideoDescription,
                 VideoTitle = video.VideoTitle,
                 VideoURL = video.VideoURL

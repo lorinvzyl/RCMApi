@@ -123,7 +123,6 @@ namespace RCMAppApi.Controllers
         private static UserEventDTO userEventDTO(UserEvent userEvent) =>
             new UserEventDTO
             {
-                Id = userEvent.Id,
                 IsAttended = userEvent.IsAttended
             };
     }

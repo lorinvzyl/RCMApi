@@ -123,7 +123,6 @@ namespace RCMAppApi.Controllers
         private static RoleDTO roleDTO(Role role) =>
             new RoleDTO
             {
-                Id = role.Id,
                 Name = role.Name,
                 Description = role.Description
             };

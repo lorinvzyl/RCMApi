@@ -123,7 +123,6 @@ namespace RCMAppApi.Controllers
         private static EventDTO eventDTO(Event _event) =>
             new EventDTO
             {
-                Id = _event.Id,
                 EventDate = _event.EventDate,
                 EventDescription = _event.EventDescription,
                 EventName = _event.EventName,

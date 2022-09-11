@@ -123,7 +123,6 @@ namespace RCMApi.Controllers
         private static BookingDTO BookingDTO(Booking booking) =>
             new BookingDTO
             {
-                Id = booking.Id,
                 Description = booking.Description,
                 Date = booking.Date
             };

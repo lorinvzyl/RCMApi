@@ -187,9 +187,7 @@ namespace RCMAppApi.Controllers
                 Name = user.Name,
                 IsNewsletter = user.IsNewsletter,
                 Surname = user.Surname,
-                HashedPassword = user.HashedPassword,
-                MemoryLimit = user.MemoryLimit,
-                Iterations = user.Iterations
+                HashedPassword = user.HashedPassword
             };
     }
 }

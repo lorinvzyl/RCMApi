@@ -123,8 +123,7 @@ namespace RCMApi.Controllers
         private static CommentDTO CommentDTO(Comment comment) =>
             new CommentDTO
             {
-                Id = comment.Id,
-                CommentText = comment.CommentText,
+                CommentText = comment.CommentText
             };
     }
 }

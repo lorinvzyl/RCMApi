@@ -123,7 +123,6 @@ namespace RCMApi.Controllers
         private static BlogDTO BlogDTO(Blog blog) =>
             new BlogDTO
             {
-                Id = blog.Id,
                 Content = blog.Content,
                 ImagePath = blog.ImagePath,
                 Description = blog.Description,
