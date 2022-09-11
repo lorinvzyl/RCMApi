@@ -1,6 +1,6 @@
 ﻿namespace RCMAppApi.Models
 {
-    public class EventDTO : BaseDomainEntity
+    public class EventDTO
     {
         public EventDTO()
         {

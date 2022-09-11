@@ -1,6 +1,6 @@
 ﻿namespace RCMAppApi.Models
 {
-    public class CommentDTO : BaseDomainEntity
+    public class CommentDTO
     {
         public CommentDTO()
         {

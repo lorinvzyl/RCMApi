@@ -2,7 +2,7 @@
 
 namespace RCMAppApi.Models
 {
-    public class BlogDTO : BaseDomainEntity
+    public class BlogDTO
     {
         public BlogDTO()
         {

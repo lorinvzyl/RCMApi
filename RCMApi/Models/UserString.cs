@@ -1,5 +1,6 @@
 ﻿namespace RCMApi.Models
 {
+    //This class takes values from the app, to allow for deserializing of string.
     public class UserString
     {
         public UserString()

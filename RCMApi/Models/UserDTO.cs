@@ -1,6 +1,6 @@
 ﻿namespace RCMAppApi.Models
 {
-    public class UserDTO : BaseDomainEntity
+    public class UserDTO
     {
         public UserDTO()
         {

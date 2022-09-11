@@ -1,6 +1,6 @@
 ﻿namespace RCMAppApi.Models
 {
-    public class RoleDTO : BaseDomainEntity
+    public class RoleDTO
     {
         public RoleDTO()
         {

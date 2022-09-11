@@ -53,18 +53,18 @@ namespace RCMAppApi.Controllers
             return user;
         }
 
-        [HttpPost("email={email}&password={password}")]
-        public async Task<ActionResult> LoginUser(string email, string password)
+        [HttpPost("login")]
+        public async Task<ActionResult> LoginUser([FromBody] UserString user)
         {
             if (_context.User == null)
                 return NotFound();
-            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
+            var userAcc = await _context.User.FirstOrDefaultAsync(u => u.Email == user.Email);
 
-            if (user == null)
+            if (userAcc == null)
                 return NotFound();
 
-            byte[] passwordIn = Encoding.UTF8.GetBytes(password);
-            byte[] hashedPassword = user.HashedPassword;
+            byte[] passwordIn = Encoding.UTF8.GetBytes(user.HashedPassword);
+            byte[] hashedPassword = userAcc.HashedPassword;
 
             HashingService hashingService = new(passwordIn, hashedPassword);
             bool login = hashingService.VerifyHash();

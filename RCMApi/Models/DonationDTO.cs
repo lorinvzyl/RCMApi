@@ -1,6 +1,6 @@
 ﻿namespace RCMAppApi.Models
 {
-    public class DonationDTO : BaseDomainEntity
+    public class DonationDTO
     {
         public DonationDTO()
         {

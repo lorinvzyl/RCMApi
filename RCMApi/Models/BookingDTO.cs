@@ -1,6 +1,6 @@
 ﻿namespace RCMAppApi.Models
 {
-    public class BookingDTO : BaseDomainEntity
+    public class BookingDTO
     {
         public BookingDTO()
         {
