@@ -99,12 +99,22 @@ namespace RCMAppApi.Controllers
         // POST: api/UserEvents
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<UserEvent>> PostUserEvent(UserEvent userEvent)
+        public async Task<ActionResult<UserEvent>> PostUserEvent(UserEventDTO userEventDTO)
         {
-          if (_context.UserEvent == null)
-          {
-              return Problem("Entity set 'DataContext.UserEvents'  is null.");
-          }
+            if (_context.UserEvent == null)
+            {
+                return Problem("Entity set 'DataContext.UserEvents'  is null.");
+            }
+
+            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == userEventDTO.UserEmail);
+
+            UserEvent userEvent = new()
+            {
+                EventId = userEventDTO.EventId,
+                IsAttended = userEventDTO.IsAttended,
+                UserId = user.Id
+            };
+
             _context.UserEvent.Add(userEvent);
             await _context.SaveChangesAsync();
 
