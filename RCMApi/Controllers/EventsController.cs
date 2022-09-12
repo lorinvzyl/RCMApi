@@ -22,13 +22,13 @@ namespace RCMAppApi.Controllers
 
         // GET: api/Events
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Event>>> GetEvents()
+        public async Task<ActionResult<IEnumerable<EventDTO>>> GetEvents()
         {
             if (_context.Event == null)
             {
                 return NotFound();
             }
-            return await _context.Event.ToListAsync();
+            return await _context.Event.Select(x => EventDTO(x)).ToListAsync();
         }
 
         // GET: api/Events/5
@@ -120,9 +120,10 @@ namespace RCMAppApi.Controllers
             return (_context.Event?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        private static EventDTO eventDTO(Event _event) =>
+        private static EventDTO EventDTO(Event _event) =>
             new EventDTO
             {
+                Id = _event.Id,
                 EventDate = _event.EventDate,
                 EventDescription = _event.EventDescription,
                 EventName = _event.EventName,

@@ -22,13 +22,29 @@ namespace RCMAppApi.Controllers
 
         // GET: api/UserEvents
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserEvent>>> GetUserEvents()
+        public async Task<ActionResult<IEnumerable<UserEventDTO>>> GetUserEvents()
         {
-          if (_context.UserEvent == null)
-          {
-              return NotFound();
-          }
-            return await _context.UserEvent.ToListAsync();
+            if (_context.UserEvent == null)
+            {
+                return NotFound();
+            }
+
+            var userEvents = await _context.UserEvent.ToListAsync();
+
+            IEnumerable<UserEventDTO> result = new List<UserEventDTO>();
+
+            foreach(var userEvent in userEvents)
+            {
+                var user = await _context.User.FindAsync(userEvent.UserId);
+                result.Append(new UserEventDTO
+                {
+                    IsAttended = userEvent.IsAttended,
+                    EventId = userEvent.EventId,
+                    UserEmail = user.Email
+                });
+            }
+
+            return CreatedAtAction("GetUserEvents", result);
         }
 
         // GET: api/UserEvents/5

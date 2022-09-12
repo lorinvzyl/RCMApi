@@ -24,11 +24,30 @@ namespace RCMApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BlogDTO>>> GetBlogs()
         {
-          if (_context.Blog == null)
-          {
-              return NotFound();
-          }
-            return await _context.Blog.Select(x => BlogDTO(x)).ToListAsync();
+            if (_context.Blog == null)
+            {
+                return NotFound();
+            }
+
+            var blog = await _context.Blog.ToListAsync();
+
+            IEnumerable<BlogDTO> result = new List<BlogDTO>();
+
+            foreach(var item in blog)
+            {
+                var author = await _context.User.FindAsync(item.AuthorId);
+                result.Append(new BlogDTO
+                {
+                    Id = item.Id,
+                    Content = item.Content,
+                    Author = author.Name,
+                    BlogTitle = item.BlogTitle,
+                    Description = item.Description,
+                    ImagePath = item.ImagePath
+                });
+            }
+
+            return CreatedAtAction("GetBlogs", result);
         }
 
         // GET: api/Blogs/5
@@ -126,7 +145,7 @@ namespace RCMApi.Controllers
                 Content = blog.Content,
                 ImagePath = blog.ImagePath,
                 Description = blog.Description,
-                BlogTitle = blog.BlogTitle
+                BlogTitle = blog.BlogTitle,
             };
     }
 }

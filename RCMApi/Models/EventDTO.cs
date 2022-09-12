@@ -5,6 +5,7 @@
         public EventDTO()
         {
         }
+        public int? Id { get; set; }
         public string? EventName { get; set; }
         public string? EventDescription { get; set; }
         public int? SpacesAvailable { get; set; }

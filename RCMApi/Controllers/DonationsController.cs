@@ -99,8 +99,7 @@ namespace RCMAppApi.Controllers
             {
                 Message = donationDTO.Message,
                 UserId = user.Id,
-                Amount = donationDTO.Amount,
-                Date = donationDTO.Date
+                Amount = donationDTO.Amount
             };
 
             _context.Donation.Add(donation);
@@ -137,7 +136,6 @@ namespace RCMAppApi.Controllers
         private static DonationDTO donationDTO(Donation donation) =>
             new DonationDTO
             {
-                Date = donation.Date,
                 Amount = donation.Amount,
                 Message = donation.Message
             };

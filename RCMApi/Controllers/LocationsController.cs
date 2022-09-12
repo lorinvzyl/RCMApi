@@ -23,13 +23,30 @@ namespace RCMApi.Controllers
 
         // GET: api/Locations
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Location>>> GetLocation()
+        public async Task<ActionResult<IEnumerable<LocationDTO>>> GetLocations()
         {
-          if (_context.Location == null)
-          {
-              return NotFound();
-          }
-            return await _context.Location.ToListAsync();
+            if (_context.Location == null)
+            {
+               return NotFound();
+            }
+
+            var locations = await _context.Location.ToListAsync();
+            
+            IEnumerable<LocationDTO> locationsDTO = new List<LocationDTO>();
+
+            foreach(var location in locations)
+            {
+                var user = await _context.User.FindAsync(location.PastorId);
+                locationsDTO.Append(new LocationDTO
+                {
+                    Id = location.Id,
+                    Pastor = user.Name,
+                    MapsURL = location.MapsURL,
+                    Name = location.Name
+                });
+            }
+
+            return CreatedAtAction("GetLocations", locationsDTO);
         }
 
         // GET: api/Locations/5
