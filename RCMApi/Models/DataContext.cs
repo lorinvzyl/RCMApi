@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RCMAppApi.Models;
+using RCMApi.Models;
 
 namespace RCMAppApi.Models
 {
@@ -21,6 +22,7 @@ namespace RCMAppApi.Models
         public DbSet<Video>? Video { get; set; }
         public DbSet<Donation>? Donation { get; set; }
         public DbSet<Booking>? Booking { get; set; }
+        public DbSet<RCMApi.Models.Reply>? Reply { get; set; }
 
     }
 }

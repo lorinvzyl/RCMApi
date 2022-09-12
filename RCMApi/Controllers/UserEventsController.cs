@@ -95,6 +95,29 @@ namespace RCMAppApi.Controllers
             return CreatedAtAction("GetUserEvent", new { id = userEvent.Id }, userEvent);
         }
 
+        [HttpPost("Attend")]
+        public async Task<ActionResult> UserAttendance(UserEventDTO userEventDTO)
+        {
+            if (_context.UserEvent == null)
+                return Problem("Entity set 'DataContext.UserEvents'  is null.");
+
+            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == userEventDTO.UserEmail);
+            if (user == null)
+                return NotFound();
+
+            UserEvent userEvent = new()
+            {
+                UserId = user.Id,
+                EventId = userEventDTO.EventId,
+                IsAttended = userEventDTO.IsAttended
+            };
+
+            _context.UserEvent.Add(userEvent);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("Attend", new { id = userEvent.Id}, userEvent);
+        }
+
         // DELETE: api/UserEvents/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserEvent(int id)

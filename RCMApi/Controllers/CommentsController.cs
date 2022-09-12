@@ -24,11 +24,48 @@ namespace RCMApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Comment>>> GetComments()
         {
-          if (_context.Comment == null)
-          {
-              return NotFound();
-          }
+            if (_context.Comment == null)
+            {
+                return NotFound();
+            }
+
             return await _context.Comment.ToListAsync();
+        }
+
+        [HttpGet("blog")]
+        public async Task<ActionResult<IEnumerable<Comment>>> GetBlogComments(int blogId)
+        {
+            if(_context.Comment == null)
+                return NotFound();
+
+            if (_context.User == null)
+                return NotFound();
+
+            var comments = await _context.Comment.ToListAsync();
+
+            IEnumerable<CommentDTO> result = new List<CommentDTO>();
+
+            foreach (var comment in comments)
+            {
+                if(blogId == comment.BlogId)
+                {
+                    int userId = (int)comment.UserId;
+                    var user = await _context.User.FindAsync(userId);
+
+                    result.Append(new CommentDTO
+                    {
+                        CommentId = comment.CommentId,
+                        CommentText = comment.CommentText,
+                        BlogId = comment.BlogId,
+                        UserEmail = user.Name
+                    });
+                }
+            }
+
+            if (!result.Any())
+                return NotFound();
+
+            return CreatedAtAction("GetBlogComments", result);
         }
 
         // GET: api/Comments/5
@@ -83,12 +120,26 @@ namespace RCMApi.Controllers
         // POST: api/Comments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Comment>> PostComment(Comment comment)
+        public async Task<ActionResult<Comment>> PostComment(CommentDTO commentDTO)
         {
-          if (_context.Comment == null)
-          {
-              return Problem("Entity set 'DataContext.Comments'  is null.");
-          }
+            if (_context.Comment == null)
+            {
+                return Problem("Entity set 'DataContext.Comments'  is null.");
+            }
+
+            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == commentDTO.UserEmail);
+
+            if (user == null)
+                return NotFound();
+
+            Comment comment = new()
+            {
+                CommentText = commentDTO.CommentText,
+                BlogId = commentDTO.BlogId,
+                CommentId = commentDTO.CommentId,
+                UserId = user.Id
+            };
+
             _context.Comment.Add(comment);
             await _context.SaveChangesAsync();
 

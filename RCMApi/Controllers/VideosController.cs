@@ -50,14 +50,17 @@ namespace RCMAppApi.Controllers
         }
 
         [HttpGet("Last")]
-        public async Task<ActionResult<IEnumerable<Video>>> GetLastVideo()
+        public async Task<ActionResult<Video>> GetLastVideo()
         {
             if (_context.Video == null)
                 return NotFound();
 
             Video lastVideo = _context.Video.OrderByDescending(x => x.DateCreated).FirstOrDefault();
 
-            return CreatedAtAction("GetLastVideo", lastVideo);
+            if (lastVideo == null)
+                return NotFound();
+
+            return lastVideo;
         }
 
         // PUT: api/Videos/5

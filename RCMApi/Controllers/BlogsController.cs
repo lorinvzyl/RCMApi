@@ -22,18 +22,18 @@ namespace RCMApi.Controllers
 
         // GET: api/Blogs
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Blog>>> GetBlogs()
+        public async Task<ActionResult<IEnumerable<BlogDTO>>> GetBlogs()
         {
           if (_context.Blog == null)
           {
               return NotFound();
           }
-            return await _context.Blog.ToListAsync();
+            return await _context.Blog.Select(x => BlogDTO(x)).ToListAsync();
         }
 
         // GET: api/Blogs/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Blog>> GetBlog(int id)
+        public async Task<ActionResult<BlogDTO>> GetBlog(int id)
         {
           if (_context.Blog == null)
           {
@@ -46,7 +46,7 @@ namespace RCMApi.Controllers
                 return NotFound();
             }
 
-            return blog;
+            return BlogDTO(blog);
         }
 
         // PUT: api/Blogs/5

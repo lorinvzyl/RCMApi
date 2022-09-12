@@ -54,7 +54,7 @@ namespace RCMAppApi.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> LoginUser([FromBody] UserString user)
+        public async Task<ActionResult> LoginUser([FromBody] UserDTO user)
         {
             if (_context.User == null)
                 return NotFound();
@@ -63,7 +63,10 @@ namespace RCMAppApi.Controllers
             if (userAcc == null)
                 return NotFound();
 
-            byte[] passwordIn = Encoding.UTF8.GetBytes(user.HashedPassword);
+            if (user.Password == null)
+                return NotFound();
+
+            byte[] passwordIn = Encoding.UTF8.GetBytes(user.Password);
             byte[] hashedPassword = userAcc.HashedPassword;
 
             HashingService hashingService = new(passwordIn, hashedPassword);
@@ -72,8 +75,8 @@ namespace RCMAppApi.Controllers
             return CreatedAtAction("LoginUser", login);
         }
 
-        [HttpGet("email={email}")]
-        public async Task<ActionResult<User>> GetUserByEmail(string email)
+        [HttpGet("email")]
+        public async Task<ActionResult<User>> GetUserByEmail([FromBody] string email)
         {
             if (_context.User == null)
                 return NotFound();
@@ -88,13 +91,15 @@ namespace RCMAppApi.Controllers
 
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        [HttpPut("email={email}")]
+        public async Task<IActionResult> PutUser(string email, [FromBody] UserDTO userDTO)
         {
-            if (id != user.Id)
+            if (email != userDTO.Email)
             {
                 return BadRequest();
             }
+
+            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == userDTO.Email);
 
             _context.Entry(user).State = EntityState.Modified;
 
@@ -104,7 +109,7 @@ namespace RCMAppApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!UserExists(user.Id))
                 {
                     return NotFound();
                 }
@@ -120,22 +125,22 @@ namespace RCMAppApi.Controllers
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser([FromBody] UserString userString)
+        public async Task<ActionResult<User>> PostUser([FromBody] UserDTO userDTO)
         {
             if (_context.User == null)
             {
                 return Problem("Entity set 'DataContext.Users'  is null.");
             }
-            if (userString.HashedPassword == null)
+            if (userDTO.Password == null)
                 return Problem("No password entered");
 
             User user = new()
             {
-                Email = userString.Email,
-                Name = userString.Name,
-                Surname = userString.Surname,
-                DateOfBirth = userString.DateOfBirth,
-                HashedPassword = Encoding.UTF8.GetBytes(userString.HashedPassword)
+                Email = userDTO.Email,
+                Name = userDTO.Name,
+                Surname = userDTO.Surname,
+                DateOfBirth = userDTO.DateOfBirth,
+                HashedPassword = Encoding.UTF8.GetBytes(userDTO.Password)
             };
 
             user.IsNewsletter = false;
@@ -155,14 +160,15 @@ namespace RCMAppApi.Controllers
         }
 
         // DELETE: api/Users/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        [HttpDelete("email")]
+        public async Task<IActionResult> DeleteUser([FromBody] string email)
         {
             if (_context.User == null)
             {
                 return NotFound();
             }
-            var user = await _context.User.FindAsync(id);
+            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == email);
+
             if (user == null)
             {
                 return NotFound();
@@ -187,7 +193,7 @@ namespace RCMAppApi.Controllers
                 Name = user.Name,
                 IsNewsletter = user.IsNewsletter,
                 Surname = user.Surname,
-                HashedPassword = user.HashedPassword
+                Password = Encoding.UTF8.GetString(user.HashedPassword)
             };
     }
 }

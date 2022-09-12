@@ -83,12 +83,26 @@ namespace RCMAppApi.Controllers
         // POST: api/Donations
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Donation>> PostDonation(Donation donation)
+        public async Task<ActionResult> PostDonation([FromBody] DonationDTO donationDTO)
         {
-          if (_context.Donation == null)
-          {
-              return Problem("Entity set 'DataContext.Donations'  is null.");
-          }
+            if (_context.Donation == null)
+            {
+                return Problem("Entity set 'DataContext.Donations'  is null.");
+            }
+
+            var user = await _context.User.FirstOrDefaultAsync(u => u.Name == donationDTO.UserEmail);
+
+            if (user == null)
+                return NotFound();
+
+            Donation donation = new()
+            {
+                Message = donationDTO.Message,
+                UserId = user.Id,
+                Amount = donationDTO.Amount,
+                Date = donationDTO.Date
+            };
+
             _context.Donation.Add(donation);
             await _context.SaveChangesAsync();
 

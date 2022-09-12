@@ -10,6 +10,6 @@
         public string? Email { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public bool? IsNewsletter { get; set; }
-        public byte[]? HashedPassword { get; set; }
+        public string? Password { get; set; }
     }
 }
