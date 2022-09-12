@@ -52,14 +52,26 @@ namespace RCMAppApi.Controllers
         // PUT: api/Events/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEvent(int id, Event @event)
+        public async Task<IActionResult> PutEvent(int id, [FromBody] EventDTO eventDTO)
         {
-            if (id != @event.Id)
+            if (id != eventDTO.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(@event).State = EntityState.Modified;
+            Event _event = new()
+            {
+                Id = (int)eventDTO.Id,
+                EventDate = eventDTO.EventDate,
+                RSVPCloseDate = eventDTO.RSVPCloseDate,
+                SpacesAvailable = eventDTO.SpacesAvailable,
+                SpacesTaken = eventDTO.SpacesTaken,
+                EventName = eventDTO.EventName,
+                Venue = eventDTO.Venue,
+                EventDescription = eventDTO.EventDescription,
+            };
+
+            _context.Entry(_event).State = EntityState.Modified;
 
             try
             {
@@ -83,16 +95,28 @@ namespace RCMAppApi.Controllers
         // POST: api/Events
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Event>> PostEvent(Event @event)
+        public async Task<ActionResult<Event>> PostEvent(EventDTO @event)
         {
             if (_context.Event == null)
             {
                 return Problem("Entity set 'DataContext.Events'  is null.");
             }
-            _context.Event.Add(@event);
+
+            Event _event = new()
+            {
+                EventDate = @event.EventDate,
+                EventDescription = @event.EventDescription,
+                EventName = @event.EventName,
+                RSVPCloseDate = @event.RSVPCloseDate,
+                SpacesAvailable = @event.SpacesAvailable,
+                SpacesTaken = @event.SpacesTaken,
+                Venue = @event.Venue
+            };
+
+            _context.Event.Add(_event);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetEvent", new { id = @event.Id }, @event);
+            return CreatedAtAction("GetEvent", new { id = _event.Id }, _event);
         }
 
         // DELETE: api/Events/5
