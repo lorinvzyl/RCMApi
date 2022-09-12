@@ -32,7 +32,7 @@ namespace RCMApi.Controllers
             return await _context.Comment.ToListAsync();
         }
 
-        [HttpGet("blog")]
+        [HttpGet("blogId={blogId}")]
         public async Task<ActionResult<IEnumerable<Comment>>> GetBlogComments(int blogId)
         {
             if(_context.Comment == null)

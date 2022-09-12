@@ -9,5 +9,6 @@
         public string? UserEmail { get; set; }
         public int? BlogId { get; set; }
         public int? CommentId { get; set; }
+        public int? ParentId { get; set; }
     }
 }

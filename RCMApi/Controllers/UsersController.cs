@@ -159,9 +159,9 @@ namespace RCMAppApi.Controllers
             return CreatedAtAction("PostUser", new { id = user.Id }, user);
         }
 
-        // DELETE: api/Users/5
-        [HttpDelete("email")]
-        public async Task<IActionResult> DeleteUser([FromBody] string email)
+        // DELETE: api/Users/{email}
+        [HttpDelete("email={email}")]
+        public async Task<IActionResult> DeleteUser(string email)
         {
             if (_context.User == null)
             {

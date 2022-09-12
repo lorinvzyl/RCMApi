@@ -22,7 +22,7 @@ namespace RCMAppApi.Models
         public DbSet<Video>? Video { get; set; }
         public DbSet<Donation>? Donation { get; set; }
         public DbSet<Booking>? Booking { get; set; }
-        public DbSet<RCMApi.Models.Reply>? Reply { get; set; }
+        public DbSet<Location>? Location { get; set; }
 
     }
 }
