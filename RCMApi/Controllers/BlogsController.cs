@@ -28,7 +28,17 @@ namespace RCMApi.Controllers
             {
                 return NotFound();
             }
-
+            
+            /*var blog = await _context.Blog.Include(u => u.User).Select(x => new BlogDTO
+            {
+                Id = x.Id,
+                Description = x.Description,
+                Author = x.User.Name,
+                BlogTitle = x.BlogTitle,
+                Content = x.Content,
+                ImagePath = x.ImagePath
+            }).ToListAsync();*/
+            
             var blog = await _context.Blog.ToListAsync();
 
             IEnumerable<BlogDTO> result = new List<BlogDTO>();
@@ -48,9 +58,13 @@ namespace RCMApi.Controllers
                     Description = item.Description,
                     ImagePath = item.ImagePath
                 });
-            }
+            } 
+            /*
+            This method works
+            */
 
             return CreatedAtAction("GetBlogs", result);
+            //return blog;
         }
 
         // GET: api/Blogs/5

@@ -12,7 +12,6 @@ namespace RCMAppApi.Models
         public string? Description { get; set; }
         public string? ImagePath { get; set; }
         public int? AuthorId { get; set; }
-        public virtual User User { get; set; }
 
         /*DTO Model integration
         public string? Secret { get; set; }*/

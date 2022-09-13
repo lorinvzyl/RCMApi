@@ -28,15 +28,25 @@ namespace RCMApi.Controllers
             if (_context.Location == null)
                 return Problem("DataContext Location is null.");
 
-            var locations = await _context.Location.Include(u => u.User).Where(p => p.Pastor.UserId == p.User.Id).Include(u => u.User).Select(x => new LocationDTO
-            {
-                Id = x.Id,
-                Name = x.Name,
-                Pastor = x.User.Name,
-                MapsURL = x.MapsURL
-            }).ToListAsync();
+            var locations = await _context.Location.ToListAsync();
 
-            return locations;
+            IEnumerable<LocationDTO> result = new List<LocationDTO>();
+
+            foreach(var location in locations)
+            {
+                var pastor = await _context.Pastor.FindAsync(location.PastorId);
+                var pastorName = await _context.User.FindAsync(pastor.UserId);
+
+                result = result.Append(new LocationDTO
+                {
+                    Id = location.Id,
+                    MapsURL = location.MapsURL,
+                    Name = location.Name,
+                    Pastor = pastorName.Name
+                });
+            }
+
+            return CreatedAtAction("GetLocations", result);
         }
 
         // GET: api/Locations/5
