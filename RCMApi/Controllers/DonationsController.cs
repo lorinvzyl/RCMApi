@@ -90,7 +90,10 @@ namespace RCMAppApi.Controllers
                 return Problem("Entity set 'DataContext.Donations'  is null.");
             }
 
-            var user = await _context.User.FirstOrDefaultAsync(u => u.Name == donationDTO.UserEmail);
+            if(_context.User == null)
+                return Problem("Entity set 'DataContext.User'  is null.");
+
+            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == donationDTO.UserEmail);
 
             if (user == null)
                 return NotFound();
@@ -133,8 +136,8 @@ namespace RCMAppApi.Controllers
             return (_context.Donation?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        private static DonationDTO donationDTO(Donation donation) =>
-            new DonationDTO
+        private static DonationDTO DonationDTO(Donation donation) =>
+            new()
             {
                 Amount = donation.Amount,
                 Message = donation.Message

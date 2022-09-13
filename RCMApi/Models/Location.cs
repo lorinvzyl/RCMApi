@@ -12,5 +12,8 @@ namespace RCMApi.Models
         public string? Name { get; set; }
         public string? MapsURL { get; set; }
         public int? PastorId { get; set; }
+
+        public Pastor? Pastor { get; set; }
+        public User? User { get; set; }
     }
 }

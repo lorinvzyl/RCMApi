@@ -67,6 +67,10 @@ namespace RCMAppApi.Controllers
                 return NotFound();
 
             byte[] passwordIn = Encoding.UTF8.GetBytes(user.Password);
+
+            if (userAcc.HashedPassword == null)
+                return NotFound();
+
             byte[] hashedPassword = userAcc.HashedPassword;
 
             HashingService hashingService = new(passwordIn, hashedPassword);
@@ -99,7 +103,13 @@ namespace RCMAppApi.Controllers
                 return BadRequest();
             }
 
+            if (_context.User == null)
+                return NotFound();
+
             var user = await _context.User.FirstOrDefaultAsync(u => u.Email == userDTO.Email);
+
+            if (user == null)
+                return NotFound();
 
             _context.Entry(user).State = EntityState.Modified;
 

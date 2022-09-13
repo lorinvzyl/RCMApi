@@ -55,10 +55,12 @@ namespace RCMAppApi.Controllers
             if (_context.Video == null)
                 return Problem("Entity set 'DataContext.Videos'  is null.");
 
-            Video lastVideo = _context.Video.OrderByDescending(x => x.DateCreated).FirstOrDefault();
+            Video? lastVideo = _context.Video.OrderByDescending(x => x.DateCreated).FirstOrDefault();
 
             if (lastVideo == null)
-                return NotFound();           return lastVideo;
+                return NotFound();          
+            
+            return lastVideo;
         }
 
         // PUT: api/Videos/5

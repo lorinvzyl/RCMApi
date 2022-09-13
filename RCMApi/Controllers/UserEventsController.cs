@@ -35,8 +35,15 @@ namespace RCMAppApi.Controllers
 
             foreach(var userEvent in userEvents)
             {
+                if (_context.User == null)
+                    return NotFound();
+
                 var user = await _context.User.FindAsync(userEvent.UserId);
-                result.Append(new UserEventDTO
+
+                if(user == null || user.Email == null)
+                    return NotFound();
+
+                result = result.Append(new UserEventDTO
                 {
                     IsAttended = userEvent.IsAttended,
                     EventId = userEvent.EventId,
@@ -106,7 +113,13 @@ namespace RCMAppApi.Controllers
                 return Problem("Entity set 'DataContext.UserEvents'  is null.");
             }
 
+            if (_context.User == null)
+                return NotFound();
+
             var user = await _context.User.FirstOrDefaultAsync(u => u.Email == userEventDTO.UserEmail);
+
+            if (user == null)
+                return NotFound();
 
             UserEvent userEvent = new()
             {
@@ -126,6 +139,9 @@ namespace RCMAppApi.Controllers
         {
             if (_context.UserEvent == null)
                 return Problem("Entity set 'DataContext.UserEvents'  is null.");
+
+            if (_context.User == null)
+                return Problem("Entity set 'DataContext.User'  is null.");
 
             var user = await _context.User.FirstOrDefaultAsync(u => u.Email == userEventDTO.UserEmail);
             if (user == null)
@@ -169,8 +185,8 @@ namespace RCMAppApi.Controllers
             return (_context.UserEvent?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        private static UserEventDTO userEventDTO(UserEvent userEvent) =>
-            new UserEventDTO
+        private static UserEventDTO UserEventDTO(UserEvent userEvent) =>
+            new()
             {
                 IsAttended = userEvent.IsAttended
             };

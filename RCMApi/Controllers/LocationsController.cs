@@ -25,28 +25,16 @@ namespace RCMApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<LocationDTO>>> GetLocations()
         {
-            if (_context.Location == null)
+
+            var locations = await _context.Location.Include(p => p.Pastor).Include(u => u.User).Select(x => new LocationDTO
             {
-               return NotFound();
-            }
+                Id = x.Id,
+                Name = x.Name,
+                Pastor = x.User.Name,
+                MapsURL = x.MapsURL
+            }).ToListAsync();
 
-            var locations = await _context.Location.ToListAsync();
-            
-            IEnumerable<LocationDTO> locationsDTO = new List<LocationDTO>();
-
-            foreach(var location in locations)
-            {
-                var user = await _context.User.FindAsync(location.PastorId);
-                locationsDTO.Append(new LocationDTO
-                {
-                    Id = location.Id,
-                    Pastor = user.Name,
-                    MapsURL = location.MapsURL,
-                    Name = location.Name
-                });
-            }
-
-            return CreatedAtAction("GetLocations", locationsDTO);
+            return locations;
         }
 
         // GET: api/Locations/5
@@ -138,8 +126,8 @@ namespace RCMApi.Controllers
             return (_context.Location?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        private static LocationDTO locationDTO(Location location) =>
-            new LocationDTO
+        private static LocationDTO LocationDTO(Location location) =>
+            new()
             {
                 Id = location.Id,
                 Name = location.Name,

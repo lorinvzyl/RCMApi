@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RCMApi.Models;
 using RCMAppApi.Models;
 
 namespace RCMApi.Controllers
@@ -41,31 +42,26 @@ namespace RCMApi.Controllers
             if (_context.User == null)
                 return NotFound();
 
-            var comments = await _context.Comment.ToListAsync();
-
-            IEnumerable<CommentDTO> result = new List<CommentDTO>();
-
-            foreach (var comment in comments)
+            var comments = await _context.Comment.Include(z => z.User).Select(x => new CommentDTO
             {
-                if(blogId == comment.BlogId)
+                Id = x.Id,
+                CommentText = x.CommentText,
+                BlogId = x.BlogId,
+                UserName = x.User.Name,
+                ParentId = x.ParentId,
+                Reply = x.Reply.Select(y => new CommentDTO
                 {
-                    int userId = (int)comment.UserId;
-                    var user = await _context.User.FindAsync(userId);
+                    CommentText = y.CommentText,
+                    BlogId = y.BlogId,
+                    Id = y.Id,
+                    UserName = y.User.Name,
+                    ParentId = y.ParentId,
+                }) as ICollection<CommentDTO>}).ToListAsync();
 
-                    result.Append(new CommentDTO
-                    {
-                        CommentId = comment.CommentId,
-                        CommentText = comment.CommentText,
-                        BlogId = comment.BlogId,
-                        UserEmail = user.Name
-                    });
-                }
-            }
-
-            if (!result.Any())
+            if (!comments.Any())
                 return NotFound();
 
-            return CreatedAtAction("GetBlogComments", result);
+            return CreatedAtAction("GetBlogComments", comments);
         }
 
         // GET: api/Comments/5
@@ -120,12 +116,15 @@ namespace RCMApi.Controllers
         // POST: api/Comments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Comment>> PostComment(CommentDTO commentDTO)
+        public async Task<ActionResult<Comment>> PostComment([FromBody] CommentDTO commentDTO)
         {
             if (_context.Comment == null)
             {
                 return Problem("Entity set 'DataContext.Comments'  is null.");
             }
+
+            if (_context.User == null)
+                return NotFound();
 
             var user = await _context.User.FirstOrDefaultAsync(u => u.Email == commentDTO.UserEmail);
 
@@ -136,8 +135,9 @@ namespace RCMApi.Controllers
             {
                 CommentText = commentDTO.CommentText,
                 BlogId = commentDTO.BlogId,
-                CommentId = commentDTO.CommentId,
-                UserId = user.Id
+                ParentId = commentDTO.ParentId,
+                UserId = user.Id,
+                CommentId = commentDTO.CommentId
             };
 
             _context.Comment.Add(comment);
@@ -172,9 +172,12 @@ namespace RCMApi.Controllers
         }
 
         private static CommentDTO CommentDTO(Comment comment) =>
-            new CommentDTO
+            new()
             {
-                CommentText = comment.CommentText
+                CommentText = comment.CommentText,
+                BlogId = comment.BlogId,
+                ParentId = comment.ParentId,
+                CommentId = comment.CommentId
             };
     }
 }

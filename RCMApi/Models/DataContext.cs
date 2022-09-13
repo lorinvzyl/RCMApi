@@ -23,6 +23,6 @@ namespace RCMAppApi.Models
         public DbSet<Donation>? Donation { get; set; }
         public DbSet<Booking>? Booking { get; set; }
         public DbSet<Location>? Location { get; set; }
-
+        public DbSet<Pastor>? Pastor { get; set; }
     }
 }

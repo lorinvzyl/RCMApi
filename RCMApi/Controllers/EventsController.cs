@@ -145,7 +145,7 @@ namespace RCMAppApi.Controllers
         }
 
         private static EventDTO EventDTO(Event _event) =>
-            new EventDTO
+            new()
             {
                 Id = _event.Id,
                 EventDate = _event.EventDate,

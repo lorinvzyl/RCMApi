@@ -33,10 +33,13 @@ namespace RCMApi.Controllers
 
             IEnumerable<BlogDTO> result = new List<BlogDTO>();
 
-            foreach(var item in blog)
+            if (_context.User == null)
+                return Problem("Entity set 'DataContext.User'  is null.");
+
+            foreach (var item in blog)
             {
                 var author = await _context.User.FindAsync(item.AuthorId);
-                result.Append(new BlogDTO
+                result = result.Append(new BlogDTO
                 {
                     Id = item.Id,
                     Content = item.Content,
@@ -140,7 +143,7 @@ namespace RCMApi.Controllers
         }
 
         private static BlogDTO BlogDTO(Blog blog) =>
-            new BlogDTO
+            new()
             {
                 Content = blog.Content,
                 ImagePath = blog.ImagePath,
