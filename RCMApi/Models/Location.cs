@@ -13,7 +13,7 @@ namespace RCMApi.Models
         public string? MapsURL { get; set; }
         public int? PastorId { get; set; }
 
-        public Pastor? Pastor { get; set; }
-        public User? User { get; set; }
+        public virtual Pastor? Pastor { get; set; }
+        public virtual User? User { get; set; }
     }
 }

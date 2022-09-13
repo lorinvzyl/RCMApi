@@ -25,8 +25,10 @@ namespace RCMApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<LocationDTO>>> GetLocations()
         {
+            if (_context.Location == null)
+                return Problem("DataContext Location is null.");
 
-            var locations = await _context.Location.Include(p => p.Pastor).Include(u => u.User).Select(x => new LocationDTO
+            var locations = await _context.Location.Include(u => u.User).Where(p => p.Pastor.UserId == p.User.Id).Include(u => u.User).Select(x => new LocationDTO
             {
                 Id = x.Id,
                 Name = x.Name,
