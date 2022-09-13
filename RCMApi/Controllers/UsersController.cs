@@ -53,6 +53,7 @@ namespace RCMAppApi.Controllers
             return user;
         }
 
+        // POST: api/Users/login
         [HttpPost("login")]
         public async Task<ActionResult> LoginUser([FromBody] UserDTO user)
         {
@@ -79,6 +80,7 @@ namespace RCMAppApi.Controllers
             return CreatedAtAction("LoginUser", login);
         }
 
+        //GET: api/Users/email
         [HttpGet("email")]
         public async Task<ActionResult<User>> GetUserByEmail([FromBody] string email)
         {
@@ -93,7 +95,7 @@ namespace RCMAppApi.Controllers
             return user;
         }
 
-        // PUT: api/Users/5
+        // PUT: api/Users/email={email}
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("email={email}")]
         public async Task<IActionResult> PutUser(string email, [FromBody] UserDTO userDTO)
@@ -169,7 +171,7 @@ namespace RCMAppApi.Controllers
             return CreatedAtAction("PostUser", new { id = user.Id }, user);
         }
 
-        // DELETE: api/Users/{email}
+        // DELETE: api/Users/email={email}
         [HttpDelete("email={email}")]
         public async Task<IActionResult> DeleteUser(string email)
         {

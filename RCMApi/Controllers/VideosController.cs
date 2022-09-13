@@ -49,7 +49,8 @@ namespace RCMAppApi.Controllers
             return video;
         }
 
-        [HttpGet("Last")]
+        // GET: api/Videos/last
+        [HttpGet("last")]
         public async Task<ActionResult<Video>> GetLastVideo()
         {
             if (_context.Video == null)

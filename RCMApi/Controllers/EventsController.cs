@@ -95,7 +95,7 @@ namespace RCMAppApi.Controllers
         // POST: api/Events
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Event>> PostEvent(EventDTO @event)
+        public async Task<ActionResult<Event>> PostEvent(EventDTO eventDTO)
         {
             if (_context.Event == null)
             {
@@ -104,13 +104,13 @@ namespace RCMAppApi.Controllers
 
             Event _event = new()
             {
-                EventDate = @event.EventDate,
-                EventDescription = @event.EventDescription,
-                EventName = @event.EventName,
-                RSVPCloseDate = @event.RSVPCloseDate,
-                SpacesAvailable = @event.SpacesAvailable,
-                SpacesTaken = @event.SpacesTaken,
-                Venue = @event.Venue
+                EventDate = eventDTO.EventDate,
+                EventDescription = eventDTO.EventDescription,
+                EventName = eventDTO.EventName,
+                RSVPCloseDate = eventDTO.RSVPCloseDate,
+                SpacesAvailable = eventDTO.SpacesAvailable,
+                SpacesTaken = eventDTO.SpacesTaken,
+                Venue = eventDTO.Venue
             };
 
             _context.Event.Add(_event);

@@ -134,7 +134,8 @@ namespace RCMAppApi.Controllers
             return CreatedAtAction("GetUserEvent", new { id = userEvent.Id }, userEvent);
         }
 
-        [HttpPost("Attend")]
+        // POST: api/UserEvents/attend
+        [HttpPost("attend")]
         public async Task<ActionResult> UserAttendance(UserEventDTO userEventDTO)
         {
             if (_context.UserEvent == null)
