@@ -55,7 +55,7 @@ namespace RCMAppApi.Controllers
             if (_context.Video == null)
                 return Problem("Entity set 'DataContext.Videos'  is null.");
 
-            Video? lastVideo = _context.Video.OrderByDescending(x => x.DateCreated).FirstOrDefault();
+            Video? lastVideo = await _context.Video.OrderByDescending(x => x.DateCreated).FirstOrDefaultAsync();
 
             if (lastVideo == null)
                 return NotFound();          
