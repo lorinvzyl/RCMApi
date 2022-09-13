@@ -77,7 +77,10 @@ namespace RCMAppApi.Controllers
             HashingService hashingService = new(passwordIn, hashedPassword);
             bool login = hashingService.VerifyHash();
 
-            return CreatedAtAction("LoginUser", login);
+            if (login == false)
+                return ValidationProblem();
+
+            return Accepted();
         }
 
         //GET: api/Users/email

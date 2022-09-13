@@ -21,6 +21,7 @@ namespace RCMApi.Controllers
         }
 
         // GET: api/Blogs
+        // Puts most recent blog to be first.
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BlogDTO>>> GetBlogs()
         {
@@ -29,17 +30,7 @@ namespace RCMApi.Controllers
                 return NotFound();
             }
             
-            /*var blog = await _context.Blog.Include(u => u.User).Select(x => new BlogDTO
-            {
-                Id = x.Id,
-                Description = x.Description,
-                Author = x.User.Name,
-                BlogTitle = x.BlogTitle,
-                Content = x.Content,
-                ImagePath = x.ImagePath
-            }).ToListAsync();*/
-            
-            var blog = await _context.Blog.ToListAsync();
+            var blog = await _context.Blog.OrderByDescending(x => x.Id).ToListAsync();
 
             IEnumerable<BlogDTO> result = new List<BlogDTO>();
 
@@ -59,12 +50,49 @@ namespace RCMApi.Controllers
                     ImagePath = item.ImagePath
                 });
             } 
-            /*
-            This method works
-            */
 
             return CreatedAtAction("GetBlogs", result);
-            //return blog;
+        }
+
+        // GET: api/Blogs/count={count}
+        // Returns a set number of items in descending order.
+        [HttpGet("count={count}")]
+        public async Task<ActionResult<IEnumerable<BlogDTO>>> GetBlogsCount(int count)
+        {
+            if (_context.Blog == null)
+            {
+                return NotFound();
+            }
+
+            var blog = await _context.Blog.OrderByDescending(x => x.Id).ToListAsync();
+
+            IEnumerable<BlogDTO> result = new List<BlogDTO>();
+
+            if (_context.User == null)
+                return Problem("Entity set 'DataContext.User'  is null.");
+
+            int counter = 0;
+
+            foreach (var item in blog)
+            {
+                var author = await _context.User.FindAsync(item.AuthorId);
+                result = result.Append(new BlogDTO
+                {
+                    Id = item.Id,
+                    Content = item.Content,
+                    Author = author.Name,
+                    BlogTitle = item.BlogTitle,
+                    Description = item.Description,
+                    ImagePath = item.ImagePath
+                });
+
+                counter++;
+
+                if (counter == count)
+                    break;
+            }
+
+            return CreatedAtAction("GetBlogs", result);
         }
 
         // GET: api/Blogs/5
