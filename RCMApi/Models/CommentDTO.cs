@@ -1,10 +1,12 @@
-﻿namespace RCMAppApi.Models
+﻿using RCMApi.Models;
+
+namespace RCMAppApi.Models
 {
     public class CommentDTO
     {
         public CommentDTO()
         {
-            Reply = new HashSet<CommentDTO>();
+            Reply = new HashSet<ReplyDTO>();
         }
         public int Id { get; set; }
         public string? CommentText { get; set; }
@@ -12,7 +14,6 @@
         public string? UserEmail { get; set; }
         public int? BlogId { get; set; }
         public int? ParentId { get; set; }
-        public int? CommentId { get; set; }
-        public virtual ICollection<CommentDTO>? Reply { get; set; } = new List<CommentDTO>();
+        public virtual ICollection<ReplyDTO>? Reply { get; set; } = new List<ReplyDTO>();
     }
 }

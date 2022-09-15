@@ -24,5 +24,6 @@ namespace RCMAppApi.Models
         public DbSet<Booking>? Booking { get; set; }
         public DbSet<Location>? Location { get; set; }
         public DbSet<Pastor>? Pastor { get; set; }
+        public DbSet<Reply>? Reply { get; set; }
     }
 }

@@ -50,14 +50,12 @@ namespace RCMApi.Controllers
                 BlogId = x.BlogId,
                 UserName = x.User.Name,
                 ParentId = x.ParentId,
-                Reply = x.Reply.Select(y => new CommentDTO
+                Reply = x.Reply.Select(y => new ReplyDTO
                 {
                     CommentText = y.CommentText,
-                    BlogId = y.BlogId,
                     Id = y.Id,
-                    UserName = y.User.Name,
                     ParentId = y.ParentId,
-                }) as ICollection<CommentDTO>}).ToListAsync();
+                }) as ICollection<ReplyDTO>}).ToListAsync();
 
             if (!comments.Any())
                 return NotFound();
@@ -138,7 +136,6 @@ namespace RCMApi.Controllers
                 BlogId = commentDTO.BlogId,
                 ParentId = commentDTO.ParentId,
                 UserId = user.Id,
-                CommentId = commentDTO.CommentId
             };
 
             _context.Comment.Add(comment);
@@ -177,8 +174,7 @@ namespace RCMApi.Controllers
             {
                 CommentText = comment.CommentText,
                 BlogId = comment.BlogId,
-                ParentId = comment.ParentId,
-                CommentId = comment.CommentId
+                ParentId = comment.ParentId
             };
     }
 }
