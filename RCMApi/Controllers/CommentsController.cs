@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RCMApi.Models;
 using RCMAppApi.Models;
 
 namespace RCMApi.Controllers
@@ -24,22 +25,53 @@ namespace RCMApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Comment>>> GetComments()
         {
-          if (_context.Comments == null)
-          {
-              return NotFound();
-          }
-            return await _context.Comments.ToListAsync();
+            if (_context.Comment == null)
+            {
+                return NotFound();
+            }
+
+            return await _context.Comment.ToListAsync();
+        }
+
+        // GET: api/Comments/blogId={blogId}
+        [HttpGet("blogId={blogId}")]
+        public async Task<ActionResult<IEnumerable<Comment>>> GetBlogComments(int blogId)
+        {
+            if(_context.Comment == null)
+                return NotFound();
+
+            if (_context.User == null)
+                return NotFound();
+
+            var comments = await _context.Comment.Include(z => z.User).Select(x => new CommentDTO
+            {
+                Id = x.Id,
+                CommentText = x.CommentText,
+                BlogId = x.BlogId,
+                UserName = x.User.Name,
+                ParentId = x.ParentId,
+                Reply = x.Reply.Select(y => new ReplyDTO
+                {
+                    CommentText = y.CommentText,
+                    Id = y.Id,
+                    ParentId = y.ParentId,
+                }) as ICollection<ReplyDTO>}).ToListAsync();
+
+            if (!comments.Any())
+                return NotFound();
+
+            return CreatedAtAction("GetBlogComments", comments);
         }
 
         // GET: api/Comments/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Comment>> GetComment(int id)
         {
-          if (_context.Comments == null)
+          if (_context.Comment == null)
           {
               return NotFound();
           }
-            var comment = await _context.Comments.FindAsync(id);
+            var comment = await _context.Comment.FindAsync(id);
 
             if (comment == null)
             {
@@ -83,13 +115,30 @@ namespace RCMApi.Controllers
         // POST: api/Comments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Comment>> PostComment(Comment comment)
+        public async Task<ActionResult<Comment>> PostComment([FromBody] CommentDTO commentDTO)
         {
-          if (_context.Comments == null)
-          {
-              return Problem("Entity set 'DataContext.Comments'  is null.");
-          }
-            _context.Comments.Add(comment);
+            if (_context.Comment == null)
+            {
+                return Problem("Entity set 'DataContext.Comments'  is null.");
+            }
+
+            if (_context.User == null)
+                return NotFound();
+
+            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == commentDTO.UserEmail);
+
+            if (user == null)
+                return NotFound();
+
+            Comment comment = new()
+            {
+                CommentText = commentDTO.CommentText,
+                BlogId = commentDTO.BlogId,
+                ParentId = commentDTO.ParentId,
+                UserId = user.Id,
+            };
+
+            _context.Comment.Add(comment);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetComment", new { id = comment.Id }, comment);
@@ -99,17 +148,17 @@ namespace RCMApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteComment(int id)
         {
-            if (_context.Comments == null)
+            if (_context.Comment == null)
             {
                 return NotFound();
             }
-            var comment = await _context.Comments.FindAsync(id);
+            var comment = await _context.Comment.FindAsync(id);
             if (comment == null)
             {
                 return NotFound();
             }
 
-            _context.Comments.Remove(comment);
+            _context.Comment.Remove(comment);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,14 +166,15 @@ namespace RCMApi.Controllers
 
         private bool CommentExists(int id)
         {
-            return (_context.Comments?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Comment?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
         private static CommentDTO CommentDTO(Comment comment) =>
-            new CommentDTO
+            new()
             {
-                Id = comment.Id,
                 CommentText = comment.CommentText,
+                BlogId = comment.BlogId,
+                ParentId = comment.ParentId
             };
     }
 }

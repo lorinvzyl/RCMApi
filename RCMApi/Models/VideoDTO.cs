@@ -1,6 +1,6 @@
 ﻿namespace RCMAppApi.Models
 {
-    public class VideoDTO : BaseDomainEntity
+    public class VideoDTO
     {
         public VideoDTO()
         {

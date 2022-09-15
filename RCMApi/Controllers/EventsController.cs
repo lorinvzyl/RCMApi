@@ -22,24 +22,24 @@ namespace RCMAppApi.Controllers
 
         // GET: api/Events
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Event>>> GetEvents()
+        public async Task<ActionResult<IEnumerable<EventDTO>>> GetEvents()
         {
-            if (_context.Events == null)
+            if (_context.Event == null)
             {
                 return NotFound();
             }
-            return await _context.Events.ToListAsync();
+            return await _context.Event.Select(x => EventDTO(x)).ToListAsync();
         }
 
         // GET: api/Events/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Event>> GetEvent(int id)
         {
-            if (_context.Events == null)
+            if (_context.Event == null)
             {
                 return NotFound();
             }
-            var @event = await _context.Events.FindAsync(id);
+            var @event = await _context.Event.FindAsync(id);
 
             if (@event == null)
             {
@@ -52,14 +52,26 @@ namespace RCMAppApi.Controllers
         // PUT: api/Events/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEvent(int id, Event @event)
+        public async Task<IActionResult> PutEvent(int id, [FromBody] EventDTO eventDTO)
         {
-            if (id != @event.Id)
+            if (id != eventDTO.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(@event).State = EntityState.Modified;
+            Event _event = new()
+            {
+                Id = (int)eventDTO.Id,
+                EventDate = eventDTO.EventDate,
+                RSVPCloseDate = eventDTO.RSVPCloseDate,
+                SpacesAvailable = eventDTO.SpacesAvailable,
+                SpacesTaken = eventDTO.SpacesTaken,
+                EventName = eventDTO.EventName,
+                Venue = eventDTO.Venue,
+                EventDescription = eventDTO.EventDescription,
+            };
+
+            _context.Entry(_event).State = EntityState.Modified;
 
             try
             {
@@ -83,33 +95,45 @@ namespace RCMAppApi.Controllers
         // POST: api/Events
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Event>> PostEvent(Event @event)
+        public async Task<ActionResult<Event>> PostEvent(EventDTO eventDTO)
         {
-            if (_context.Events == null)
+            if (_context.Event == null)
             {
                 return Problem("Entity set 'DataContext.Events'  is null.");
             }
-            _context.Events.Add(@event);
+
+            Event _event = new()
+            {
+                EventDate = eventDTO.EventDate,
+                EventDescription = eventDTO.EventDescription,
+                EventName = eventDTO.EventName,
+                RSVPCloseDate = eventDTO.RSVPCloseDate,
+                SpacesAvailable = eventDTO.SpacesAvailable,
+                SpacesTaken = eventDTO.SpacesTaken,
+                Venue = eventDTO.Venue
+            };
+
+            _context.Event.Add(_event);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetEvent", new { id = @event.Id }, @event);
+            return CreatedAtAction("GetEvent", new { id = _event.Id }, _event);
         }
 
         // DELETE: api/Events/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEvent(int id)
         {
-            if (_context.Events == null)
+            if (_context.Event == null)
             {
                 return NotFound();
             }
-            var @event = await _context.Events.FindAsync(id);
+            var @event = await _context.Event.FindAsync(id);
             if (@event == null)
             {
                 return NotFound();
             }
 
-            _context.Events.Remove(@event);
+            _context.Event.Remove(@event);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,11 +141,11 @@ namespace RCMAppApi.Controllers
 
         private bool EventExists(int id)
         {
-            return (_context.Events?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Event?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        private static EventDTO eventDTO(Event _event) =>
-            new EventDTO
+        private static EventDTO EventDTO(Event _event) =>
+            new()
             {
                 Id = _event.Id,
                 EventDate = _event.EventDate,

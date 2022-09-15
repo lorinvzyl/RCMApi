@@ -22,24 +22,47 @@ namespace RCMAppApi.Controllers
 
         // GET: api/UserEvents
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserEvent>>> GetUserEvents()
+        public async Task<ActionResult<IEnumerable<UserEventDTO>>> GetUserEvents()
         {
-          if (_context.UserEvents == null)
-          {
-              return NotFound();
-          }
-            return await _context.UserEvents.ToListAsync();
+            if (_context.UserEvent == null)
+            {
+                return NotFound();
+            }
+
+            var userEvents = await _context.UserEvent.ToListAsync();
+
+            IEnumerable<UserEventDTO> result = new List<UserEventDTO>();
+
+            foreach(var userEvent in userEvents)
+            {
+                if (_context.User == null)
+                    return NotFound();
+
+                var user = await _context.User.FindAsync(userEvent.UserId);
+
+                if(user == null || user.Email == null)
+                    return NotFound();
+
+                result = result.Append(new UserEventDTO
+                {
+                    IsAttended = userEvent.IsAttended,
+                    EventId = userEvent.EventId,
+                    UserEmail = user.Email
+                });
+            }
+
+            return CreatedAtAction("GetUserEvents", result);
         }
 
         // GET: api/UserEvents/5
         [HttpGet("{id}")]
         public async Task<ActionResult<UserEvent>> GetUserEvent(int id)
         {
-          if (_context.UserEvents == null)
+          if (_context.UserEvent == null)
           {
               return NotFound();
           }
-            var userEvent = await _context.UserEvents.FindAsync(id);
+            var userEvent = await _context.UserEvent.FindAsync(id);
 
             if (userEvent == null)
             {
@@ -83,33 +106,76 @@ namespace RCMAppApi.Controllers
         // POST: api/UserEvents
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<UserEvent>> PostUserEvent(UserEvent userEvent)
+        public async Task<ActionResult<UserEvent>> PostUserEvent(UserEventDTO userEventDTO)
         {
-          if (_context.UserEvents == null)
-          {
-              return Problem("Entity set 'DataContext.UserEvents'  is null.");
-          }
-            _context.UserEvents.Add(userEvent);
+            if (_context.UserEvent == null)
+            {
+                return Problem("Entity set 'DataContext.UserEvents'  is null.");
+            }
+
+            if (_context.User == null)
+                return NotFound();
+
+            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == userEventDTO.UserEmail);
+
+            if (user == null)
+                return NotFound();
+
+            UserEvent userEvent = new()
+            {
+                EventId = userEventDTO.EventId,
+                IsAttended = userEventDTO.IsAttended,
+                UserId = user.Id
+            };
+
+            _context.UserEvent.Add(userEvent);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetUserEvent", new { id = userEvent.Id }, userEvent);
+        }
+
+        // POST: api/UserEvents/attend
+        [HttpPost("attend")]
+        public async Task<ActionResult> UserAttendance(UserEventDTO userEventDTO)
+        {
+            if (_context.UserEvent == null)
+                return Problem("Entity set 'DataContext.UserEvents'  is null.");
+
+            if (_context.User == null)
+                return Problem("Entity set 'DataContext.User'  is null.");
+
+            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == userEventDTO.UserEmail);
+            if (user == null)
+                return NotFound();
+
+            UserEvent userEvent = new()
+            {
+                UserId = user.Id,
+                EventId = userEventDTO.EventId,
+                IsAttended = userEventDTO.IsAttended
+            };
+
+            _context.UserEvent.Add(userEvent);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("Attend", new { id = userEvent.Id}, userEvent);
         }
 
         // DELETE: api/UserEvents/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserEvent(int id)
         {
-            if (_context.UserEvents == null)
+            if (_context.UserEvent == null)
             {
                 return NotFound();
             }
-            var userEvent = await _context.UserEvents.FindAsync(id);
+            var userEvent = await _context.UserEvent.FindAsync(id);
             if (userEvent == null)
             {
                 return NotFound();
             }
 
-            _context.UserEvents.Remove(userEvent);
+            _context.UserEvent.Remove(userEvent);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,13 +183,12 @@ namespace RCMAppApi.Controllers
 
         private bool UserEventExists(int id)
         {
-            return (_context.UserEvents?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.UserEvent?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        private static UserEventDTO userEventDTO(UserEvent userEvent) =>
-            new UserEventDTO
+        private static UserEventDTO UserEventDTO(UserEvent userEvent) =>
+            new()
             {
-                Id = userEvent.Id,
                 IsAttended = userEvent.IsAttended
             };
     }

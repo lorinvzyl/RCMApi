@@ -5,61 +5,62 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RCMApi.Models;
 using RCMAppApi.Models;
 
-namespace RCMAppApi.Controllers
+namespace RCMApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RolesController : ControllerBase
+    public class PastorsController : ControllerBase
     {
         private readonly DataContext _context;
 
-        public RolesController(DataContext context)
+        public PastorsController(DataContext context)
         {
             _context = context;
         }
 
-        // GET: api/Roles
+        // GET: api/Pastors
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Role>>> GetRoles()
+        public async Task<ActionResult<IEnumerable<Pastor>>> GetPastor()
         {
-          if (_context.Roles == null)
+          if (_context.Pastor == null)
           {
               return NotFound();
           }
-            return await _context.Roles.ToListAsync();
+            return await _context.Pastor.ToListAsync();
         }
 
-        // GET: api/Roles/5
+        // GET: api/Pastors/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Role>> GetRole(int id)
+        public async Task<ActionResult<Pastor>> GetPastor(int id)
         {
-          if (_context.Roles == null)
+          if (_context.Pastor == null)
           {
               return NotFound();
           }
-            var role = await _context.Roles.FindAsync(id);
+            var pastor = await _context.Pastor.FindAsync(id);
 
-            if (role == null)
+            if (pastor == null)
             {
                 return NotFound();
             }
 
-            return role;
+            return pastor;
         }
 
-        // PUT: api/Roles/5
+        // PUT: api/Pastors/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutRole(int id, Role role)
+        public async Task<IActionResult> PutPastor(int id, Pastor pastor)
         {
-            if (id != role.Id)
+            if (id != pastor.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(role).State = EntityState.Modified;
+            _context.Entry(pastor).State = EntityState.Modified;
 
             try
             {
@@ -67,7 +68,7 @@ namespace RCMAppApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!RoleExists(id))
+                if (!PastorExists(id))
                 {
                     return NotFound();
                 }
@@ -80,52 +81,44 @@ namespace RCMAppApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Roles
+        // POST: api/Pastors
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Role>> PostRole(Role role)
+        public async Task<ActionResult<Pastor>> PostPastor([FromBody] Pastor pastor)
         {
-          if (_context.Roles == null)
+          if (_context.Pastor == null)
           {
-              return Problem("Entity set 'DataContext.Roles'  is null.");
+              return Problem("Entity set 'DataContext.Pastor'  is null.");
           }
-            _context.Roles.Add(role);
+            _context.Pastor.Add(pastor);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetRole", new { id = role.Id }, role);
+            return CreatedAtAction("GetPastor", new { id = pastor.Id }, pastor);
         }
 
-        // DELETE: api/Roles/5
+        // DELETE: api/Pastors/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRole(int id)
+        public async Task<IActionResult> DeletePastor(int id)
         {
-            if (_context.Roles == null)
+            if (_context.Pastor == null)
             {
                 return NotFound();
             }
-            var role = await _context.Roles.FindAsync(id);
-            if (role == null)
+            var pastor = await _context.Pastor.FindAsync(id);
+            if (pastor == null)
             {
                 return NotFound();
             }
 
-            _context.Roles.Remove(role);
+            _context.Pastor.Remove(pastor);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool RoleExists(int id)
+        private bool PastorExists(int id)
         {
-            return (_context.Roles?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Pastor?.Any(e => e.Id == id)).GetValueOrDefault();
         }
-
-        private static RoleDTO roleDTO(Role role) =>
-            new RoleDTO
-            {
-                Id = role.Id,
-                Name = role.Name,
-                Description = role.Description
-            };
     }
 }

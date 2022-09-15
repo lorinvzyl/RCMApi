@@ -24,22 +24,22 @@ namespace RCMAppApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Donation>>> GetDonations()
         {
-          if (_context.Donations == null)
+          if (_context.Donation == null)
           {
               return NotFound();
           }
-            return await _context.Donations.ToListAsync();
+            return await _context.Donation.ToListAsync();
         }
 
         // GET: api/Donations/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Donation>> GetDonation(int id)
         {
-          if (_context.Donations == null)
+          if (_context.Donation == null)
           {
               return NotFound();
           }
-            var donation = await _context.Donations.FindAsync(id);
+            var donation = await _context.Donation.FindAsync(id);
 
             if (donation == null)
             {
@@ -83,13 +83,29 @@ namespace RCMAppApi.Controllers
         // POST: api/Donations
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Donation>> PostDonation(Donation donation)
+        public async Task<ActionResult> PostDonation([FromBody] DonationDTO donationDTO)
         {
-          if (_context.Donations == null)
-          {
-              return Problem("Entity set 'DataContext.Donations'  is null.");
-          }
-            _context.Donations.Add(donation);
+            if (_context.Donation == null)
+            {
+                return Problem("Entity set 'DataContext.Donations'  is null.");
+            }
+
+            if(_context.User == null)
+                return Problem("Entity set 'DataContext.User'  is null.");
+
+            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == donationDTO.UserEmail);
+
+            if (user == null)
+                return NotFound();
+
+            Donation donation = new()
+            {
+                Message = donationDTO.Message,
+                UserId = user.Id,
+                Amount = donationDTO.Amount
+            };
+
+            _context.Donation.Add(donation);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetDonation", new { id = donation.Id }, donation);
@@ -99,17 +115,17 @@ namespace RCMAppApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDonation(int id)
         {
-            if (_context.Donations == null)
+            if (_context.Donation == null)
             {
                 return NotFound();
             }
-            var donation = await _context.Donations.FindAsync(id);
+            var donation = await _context.Donation.FindAsync(id);
             if (donation == null)
             {
                 return NotFound();
             }
 
-            _context.Donations.Remove(donation);
+            _context.Donation.Remove(donation);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,14 +133,12 @@ namespace RCMAppApi.Controllers
 
         private bool DonationExists(int id)
         {
-            return (_context.Donations?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Donation?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        private static DonationDTO donationDTO(Donation donation) =>
-            new DonationDTO
+        private static DonationDTO DonationDTO(Donation donation) =>
+            new()
             {
-                Id = donation.Id,
-                Date = donation.Date,
                 Amount = donation.Amount,
                 Message = donation.Message
             };

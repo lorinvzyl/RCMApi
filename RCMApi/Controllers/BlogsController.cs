@@ -21,32 +21,96 @@ namespace RCMApi.Controllers
         }
 
         // GET: api/Blogs
+        // Puts most recent blog to be first.
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Blog>>> GetBlogs()
+        public async Task<ActionResult<IEnumerable<BlogDTO>>> GetBlogs()
         {
-          if (_context.Blogs == null)
-          {
-              return NotFound();
-          }
-            return await _context.Blogs.ToListAsync();
+            if (_context.Blog == null)
+            {
+                return NotFound();
+            }
+            
+            var blog = await _context.Blog.OrderByDescending(x => x.Id).ToListAsync();
+
+            IEnumerable<BlogDTO> result = new List<BlogDTO>();
+
+            if (_context.User == null)
+                return Problem("Entity set 'DataContext.User'  is null.");
+
+            foreach (var item in blog)
+            {
+                var author = await _context.User.FindAsync(item.AuthorId);
+                result = result.Append(new BlogDTO
+                {
+                    Id = item.Id,
+                    Content = item.Content,
+                    Author = author.Name,
+                    BlogTitle = item.BlogTitle,
+                    Description = item.Description,
+                    ImagePath = item.ImagePath
+                });
+            } 
+
+            return CreatedAtAction("GetBlogs", result);
+        }
+
+        // GET: api/Blogs/count={count}
+        // Returns a set number of items in descending order.
+        [HttpGet("count={count}")]
+        public async Task<ActionResult<IEnumerable<BlogDTO>>> GetBlogsCount(int count)
+        {
+            if (_context.Blog == null)
+            {
+                return NotFound();
+            }
+
+            var blog = await _context.Blog.OrderByDescending(x => x.Id).ToListAsync();
+
+            IEnumerable<BlogDTO> result = new List<BlogDTO>();
+
+            if (_context.User == null)
+                return Problem("Entity set 'DataContext.User'  is null.");
+
+            int counter = 0;
+
+            foreach (var item in blog)
+            {
+                var author = await _context.User.FindAsync(item.AuthorId);
+                result = result.Append(new BlogDTO
+                {
+                    Id = item.Id,
+                    Content = item.Content,
+                    Author = author.Name,
+                    BlogTitle = item.BlogTitle,
+                    Description = item.Description,
+                    ImagePath = item.ImagePath
+                });
+
+                counter++;
+
+                if (counter == count)
+                    break;
+            }
+
+            return CreatedAtAction("GetBlogs", result);
         }
 
         // GET: api/Blogs/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Blog>> GetBlog(int id)
+        public async Task<ActionResult<BlogDTO>> GetBlog(int id)
         {
-          if (_context.Blogs == null)
+          if (_context.Blog == null)
           {
               return NotFound();
           }
-            var blog = await _context.Blogs.FindAsync(id);
+            var blog = await _context.Blog.FindAsync(id);
 
             if (blog == null)
             {
                 return NotFound();
             }
 
-            return blog;
+            return BlogDTO(blog);
         }
 
         // PUT: api/Blogs/5
@@ -85,11 +149,11 @@ namespace RCMApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Blog>> PostBlog(Blog blog)
         {
-          if (_context.Blogs == null)
+          if (_context.Blog == null)
           {
               return Problem("Entity set 'DataContext.Blogs'  is null.");
           }
-            _context.Blogs.Add(blog);
+            _context.Blog.Add(blog);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetBlog", new { id = blog.Id }, blog);
@@ -99,17 +163,17 @@ namespace RCMApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBlog(int id)
         {
-            if (_context.Blogs == null)
+            if (_context.Blog == null)
             {
                 return NotFound();
             }
-            var blog = await _context.Blogs.FindAsync(id);
+            var blog = await _context.Blog.FindAsync(id);
             if (blog == null)
             {
                 return NotFound();
             }
 
-            _context.Blogs.Remove(blog);
+            _context.Blog.Remove(blog);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,17 +181,16 @@ namespace RCMApi.Controllers
 
         private bool BlogExists(int id)
         {
-            return (_context.Blogs?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Blog?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
         private static BlogDTO BlogDTO(Blog blog) =>
-            new BlogDTO
+            new()
             {
-                Id = blog.Id,
                 Content = blog.Content,
                 ImagePath = blog.ImagePath,
                 Description = blog.Description,
-                BlogTitle = blog.BlogTitle
+                BlogTitle = blog.BlogTitle,
             };
     }
 }

@@ -12,20 +12,26 @@
     "RCMAppApi": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "swagger", //update this to the website name
+      "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:7145;http://localhost:5145",
+      "applicationUrl": "http://localhost:5145",
       "dotnetRunMessages": true
-    },
+    }, //https://localhost:7145;
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "swagger", //update this to the website name
+      "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/api",
+      "publishAllPorts": true
     }
   }
 }

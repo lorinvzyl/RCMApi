@@ -24,22 +24,22 @@ namespace RCMAppApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Video>>> GetVideos()
         {
-          if (_context.Videos == null)
+          if (_context.Video == null)
           {
               return NotFound();
           }
-            return await _context.Videos.ToListAsync();
+            return await _context.Video.ToListAsync();
         }
 
         // GET: api/Videos/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Video>> GetVideo(int id)
         {
-          if (_context.Videos == null)
+          if (_context.Video == null)
           {
               return NotFound();
           }
-            var video = await _context.Videos.FindAsync(id);
+            var video = await _context.Video.FindAsync(id);
 
             if (video == null)
             {
@@ -47,6 +47,21 @@ namespace RCMAppApi.Controllers
             }
 
             return video;
+        }
+
+        // GET: api/Videos/last
+        [HttpGet("last")]
+        public async Task<ActionResult<Video>> GetLastVideo()
+        {
+            if (_context.Video == null)
+                return Problem("Entity set 'DataContext.Videos'  is null.");
+
+            Video? lastVideo = await _context.Video.OrderByDescending(x => x.DateCreated).FirstOrDefaultAsync();
+
+            if (lastVideo == null)
+                return NotFound();          
+            
+            return lastVideo;
         }
 
         // PUT: api/Videos/5
@@ -85,11 +100,11 @@ namespace RCMAppApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Video>> PostVideo(Video video)
         {
-          if (_context.Videos == null)
+          if (_context.Video == null)
           {
               return Problem("Entity set 'DataContext.Videos'  is null.");
           }
-            _context.Videos.Add(video);
+            _context.Video.Add(video);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetVideo", new { id = video.Id }, video);
@@ -99,17 +114,17 @@ namespace RCMAppApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVideo(int id)
         {
-            if (_context.Videos == null)
+            if (_context.Video == null)
             {
                 return NotFound();
             }
-            var video = await _context.Videos.FindAsync(id);
+            var video = await _context.Video.FindAsync(id);
             if (video == null)
             {
                 return NotFound();
             }
 
-            _context.Videos.Remove(video);
+            _context.Video.Remove(video);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -117,13 +132,12 @@ namespace RCMAppApi.Controllers
 
         private bool VideoExists(int id)
         {
-            return (_context.Videos?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Video?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        private static VideoDTO videoDTO(Video video) =>
-            new VideoDTO
+        private static VideoDTO VideoDTO(Video video) =>
+            new()
             {
-                Id = video.Id,
                 VideoDescription = video.VideoDescription,
                 VideoTitle = video.VideoTitle,
                 VideoURL = video.VideoURL

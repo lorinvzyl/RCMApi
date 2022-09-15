@@ -5,61 +5,62 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RCMApi.Models;
 using RCMAppApi.Models;
 
-namespace RCMAppApi.Controllers
+namespace RCMApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserRolesController : ControllerBase
+    public class RepliesController : ControllerBase
     {
         private readonly DataContext _context;
 
-        public UserRolesController(DataContext context)
+        public RepliesController(DataContext context)
         {
             _context = context;
         }
 
-        // GET: api/UserRoles
+        // GET: api/Replies
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserRole>>> GetUserRoles()
+        public async Task<ActionResult<IEnumerable<Reply>>> GetReply()
         {
-          if (_context.UserRoles == null)
+          if (_context.Reply == null)
           {
               return NotFound();
           }
-            return await _context.UserRoles.ToListAsync();
+            return await _context.Reply.ToListAsync();
         }
 
-        // GET: api/UserRoles/5
+        // GET: api/Replies/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserRole>> GetUserRole(int id)
+        public async Task<ActionResult<Reply>> GetReply(int id)
         {
-          if (_context.UserRoles == null)
+          if (_context.Reply == null)
           {
               return NotFound();
           }
-            var userRole = await _context.UserRoles.FindAsync(id);
+            var reply = await _context.Reply.FindAsync(id);
 
-            if (userRole == null)
+            if (reply == null)
             {
                 return NotFound();
             }
 
-            return userRole;
+            return reply;
         }
 
-        // PUT: api/UserRoles/5
+        // PUT: api/Replies/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUserRole(int id, UserRole userRole)
+        public async Task<IActionResult> PutReply(int id, Reply reply)
         {
-            if (id != userRole.Id)
+            if (id != reply.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(userRole).State = EntityState.Modified;
+            _context.Entry(reply).State = EntityState.Modified;
 
             try
             {
@@ -67,7 +68,7 @@ namespace RCMAppApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserRoleExists(id))
+                if (!ReplyExists(id))
                 {
                     return NotFound();
                 }
@@ -80,44 +81,44 @@ namespace RCMAppApi.Controllers
             return NoContent();
         }
 
-        // POST: api/UserRoles
+        // POST: api/Replies
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<UserRole>> PostUserRole(UserRole userRole)
+        public async Task<ActionResult<Reply>> PostReply(Reply reply)
         {
-          if (_context.UserRoles == null)
+          if (_context.Reply == null)
           {
-              return Problem("Entity set 'DataContext.UserRoles'  is null.");
+              return Problem("Entity set 'DataContext.Reply'  is null.");
           }
-            _context.UserRoles.Add(userRole);
+            _context.Reply.Add(reply);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUserRole", new { id = userRole.Id }, userRole);
+            return CreatedAtAction("GetReply", new { id = reply.Id }, reply);
         }
 
-        // DELETE: api/UserRoles/5
+        // DELETE: api/Replies/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUserRole(int id)
+        public async Task<IActionResult> DeleteReply(int id)
         {
-            if (_context.UserRoles == null)
+            if (_context.Reply == null)
             {
                 return NotFound();
             }
-            var userRole = await _context.UserRoles.FindAsync(id);
-            if (userRole == null)
+            var reply = await _context.Reply.FindAsync(id);
+            if (reply == null)
             {
                 return NotFound();
             }
 
-            _context.UserRoles.Remove(userRole);
+            _context.Reply.Remove(reply);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool UserRoleExists(int id)
+        private bool ReplyExists(int id)
         {
-            return (_context.UserRoles?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Reply?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

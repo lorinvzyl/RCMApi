@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RCMAppApi.Models;
+using RCMApi.Models;
 
 namespace RCMAppApi.Models
 {
@@ -11,16 +12,18 @@ namespace RCMAppApi.Models
 
         }
 
-        public DbSet<Blog>? Blogs { get; set; }
-        public DbSet<Comment>? Comments { get; set; }
-        public DbSet<Role>? Roles { get; set; }
-        public DbSet<Event>? Events { get; set; }
-        public DbSet<User>? Users { get; set; }
-        public DbSet<UserEvent>? UserEvents { get; set; }
-        public DbSet<UserRole>? UserRoles { get; set; }
-        public DbSet<Video>? Videos { get; set; }
-        public DbSet<Donation>? Donations { get; set; }
-        public DbSet<Booking>? Bookings { get; set; }
-
+        public DbSet<Blog>? Blog { get; set; }
+        public DbSet<Comment>? Comment { get; set; }
+        public DbSet<Role>? Role { get; set; }
+        public DbSet<Event>? Event { get; set; }
+        public DbSet<User>? User { get; set; }
+        public DbSet<UserEvent>? UserEvent { get; set; }
+        public DbSet<UserRole>? UserRole { get; set; }
+        public DbSet<Video>? Video { get; set; }
+        public DbSet<Donation>? Donation { get; set; }
+        public DbSet<Booking>? Booking { get; set; }
+        public DbSet<Location>? Location { get; set; }
+        public DbSet<Pastor>? Pastor { get; set; }
+        public DbSet<Reply>? Reply { get; set; }
     }
 }
