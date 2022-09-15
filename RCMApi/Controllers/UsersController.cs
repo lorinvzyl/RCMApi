@@ -84,8 +84,8 @@ namespace RCMAppApi.Controllers
         }
 
         //GET: api/Users/email
-        [HttpGet("email")]
-        public async Task<ActionResult<User>> GetUserByEmail([FromBody] string email)
+        [HttpGet("email={email}")]
+        public async Task<ActionResult<User>> GetUserByEmail(string email)
         {
             if (_context.User == null)
                 return NotFound();
