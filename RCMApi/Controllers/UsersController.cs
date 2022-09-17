@@ -98,12 +98,12 @@ namespace RCMAppApi.Controllers
             return user;
         }
 
-        // PUT: api/Users/email={email}
+        // PUT: api/Users/{id}
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("email={email}")]
-        public async Task<IActionResult> PutUser(string email, [FromBody] UserDTO userDTO)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutUser(int id, [FromBody] User user)
         {
-            if (email != userDTO.Email)
+            if (id != user.Id)
             {
                 return BadRequest();
             }
@@ -111,10 +111,14 @@ namespace RCMAppApi.Controllers
             if (_context.User == null)
                 return NotFound();
 
-            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == userDTO.Email);
+            var user1 = await _context.User.AsNoTracking().FirstOrDefaultAsync(x => x.Id == user.Id);
 
-            if (user == null)
-                return NotFound();
+            user.Iterations = user1.Iterations;
+            user.IsDeleted = user1.IsDeleted;
+            user.DateModified = DateTime.Now.Date;
+            user.IsActive = user1.IsActive;
+            user.HashedPassword = user1.HashedPassword;
+            user.MemoryLimit = user1.MemoryLimit;
 
             _context.Entry(user).State = EntityState.Modified;
 
