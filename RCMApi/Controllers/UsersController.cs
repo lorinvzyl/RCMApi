@@ -155,6 +155,7 @@ namespace RCMAppApi.Controllers
                 Name = userDTO.Name,
                 Surname = userDTO.Surname,
                 DateOfBirth = userDTO.DateOfBirth,
+                ProfilePicURL = userDTO.ProfilePicURL,
                 HashedPassword = Encoding.UTF8.GetBytes(userDTO.Password)
             };
 
