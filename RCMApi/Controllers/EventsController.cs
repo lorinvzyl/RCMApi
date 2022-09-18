@@ -59,7 +59,7 @@ namespace RCMAppApi.Controllers
                 return BadRequest();
             }
 
-            var extra = await _context.Event.AsNoTracking().FirstOrDefaultAsync(x => x.Id == eventDTO.Id)
+            var extra = await _context.Event.AsNoTracking().FirstOrDefaultAsync(x => x.Id == eventDTO.Id);
 
             Event _event = new()
             {
