@@ -49,12 +49,12 @@ namespace RCMApi.Controllers
                 CommentText = x.CommentText,
                 BlogId = x.BlogId,
                 UserName = x.User.Name,
-                ParentId = x.ParentId,
                 Reply = x.Reply.Select(y => new ReplyDTO
                 {
                     CommentText = y.CommentText,
                     Id = y.Id,
-                    ParentId = y.ParentId,
+                    CommentId = y.CommentId,
+                    UserName = y.User.Name
                 }) as ICollection<ReplyDTO>}).ToListAsync();
 
             if (!comments.Any())
@@ -134,7 +134,6 @@ namespace RCMApi.Controllers
             {
                 CommentText = commentDTO.CommentText,
                 BlogId = commentDTO.BlogId,
-                ParentId = commentDTO.ParentId,
                 UserId = user.Id,
             };
 
@@ -174,7 +173,6 @@ namespace RCMApi.Controllers
             {
                 CommentText = comment.CommentText,
                 BlogId = comment.BlogId,
-                ParentId = comment.ParentId
             };
     }
 }

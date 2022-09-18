@@ -13,7 +13,6 @@ namespace RCMAppApi.Models
         public string? UserName { get; set; }
         public string? UserEmail { get; set; }
         public int? BlogId { get; set; }
-        public int? ParentId { get; set; }
         public virtual ICollection<ReplyDTO>? Reply { get; set; } = new List<ReplyDTO>();
     }
 }
