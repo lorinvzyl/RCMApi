@@ -43,7 +43,7 @@ namespace RCMApi.Controllers
             if (_context.User == null)
                 return NotFound();
 
-            var comments = await _context.Comment.Include(z => z.User).Select(x => new CommentDTO
+            var comments = await _context.Comment.Include(z => z.User).Where(x => x.BlogId == blogId).Select(x => new CommentDTO
             {
                 Id = x.Id,
                 CommentText = x.CommentText,

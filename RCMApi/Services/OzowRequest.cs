@@ -20,7 +20,7 @@ namespace RCMApi.Services
         {
             HttpClient client = new HttpClient();
             var concat = new String($"{siteCode}{countryCode}{currencyCode}{amount}{transactionReference}{bankReference}{isTest}");
-            concat.ToLower();
+            concat = concat.ToLower();
 
             var json = JsonConvert.SerializeObject(concat);
             var content = new StringContent(json, Encoding.UTF8, "applcation/json");
