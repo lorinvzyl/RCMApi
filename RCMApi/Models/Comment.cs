@@ -12,8 +12,8 @@ namespace RCMAppApi.Models
         public int? UserId { get; set; }
         public int? VideoId { get; set; }
         public int? BlogId { get; set; }
-        public virtual User? User { get; set; }
 
+        public virtual User? User { get; set; }
         public virtual ICollection<Reply>? Reply { get; set; } = new List<Reply>();
 
         /*DTO Model integration

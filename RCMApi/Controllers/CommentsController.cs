@@ -81,15 +81,26 @@ namespace RCMApi.Controllers
             return comment;
         }
 
-        // PUT: api/Comments/5
+        // PUT: api/Comments/
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutComment(int id, Comment comment)
+        [HttpPut()]
+        public async Task<IActionResult> PutComment(CommentDTO commentDTO)
         {
-            if (id != comment.Id)
+            //if (id != commentDTO.Id)
+            //{
+            //    return BadRequest();
+            //}
+
+            var user = await _context.User.AsNoTracking().FirstOrDefaultAsync(c => c.Email == commentDTO.UserEmail);
+
+            Comment comment = new Comment()
             {
-                return BadRequest();
-            }
+                BlogId = commentDTO.BlogId,
+                CommentText = commentDTO.CommentText,
+                UserId = user.Id,
+                Reply = (ICollection<Reply>)commentDTO.Reply
+            };
+
 
             _context.Entry(comment).State = EntityState.Modified;
 
@@ -99,14 +110,6 @@ namespace RCMApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CommentExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
             }
 
             return NoContent();
