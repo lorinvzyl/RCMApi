@@ -81,26 +81,33 @@ namespace RCMApi.Controllers
             return comment;
         }
 
-        // PUT: api/Comments/
+        // PUT: api/Comments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut()]
-        public async Task<IActionResult> PutComment(CommentDTO commentDTO)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutComment(int id, CommentDTO commentDTO)
         {
-            //if (id != commentDTO.Id)
-            //{
-            //    return BadRequest();
-            //}
+            if (id != commentDTO.Id)
+            {
+                return BadRequest();
+            }
+            if (_context.User == null || _context.Comment == null)
+                return NotFound();
 
             var user = await _context.User.AsNoTracking().FirstOrDefaultAsync(c => c.Email == commentDTO.UserEmail);
+            var dbComment = await _context.Comment.FindAsync(id);
 
             Comment comment = new Comment()
             {
                 BlogId = commentDTO.BlogId,
                 CommentText = commentDTO.CommentText,
                 UserId = user.Id,
+                Id = id,
+                DateCreated = dbComment.DateCreated,
+                DateModified = DateTime.Now,
+                IsDeleted = dbComment.IsDeleted,
+                IsActive = dbComment.IsActive,
                 Reply = (ICollection<Reply>)commentDTO.Reply
             };
-
 
             _context.Entry(comment).State = EntityState.Modified;
 
