@@ -59,6 +59,8 @@ namespace RCMAppApi.Controllers
                 return BadRequest();
             }
 
+            var extra = await _context.Event.AsNoTracking().FirstOrDefaultAsync(x => x.Id == eventDTO.Id);
+
             Event _event = new()
             {
                 Id = (int)eventDTO.Id,
@@ -69,6 +71,9 @@ namespace RCMAppApi.Controllers
                 EventName = eventDTO.EventName,
                 Venue = eventDTO.Venue,
                 EventDescription = eventDTO.EventDescription,
+                IsActive = extra.IsActive,
+                IsDeleted = extra.IsDeleted,
+                DateModified = DateTime.Now.Date
             };
 
             _context.Entry(_event).State = EntityState.Modified;

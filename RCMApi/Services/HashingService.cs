@@ -26,7 +26,7 @@ namespace RCMAppApi.Services
         }
 
         //will be used to pass hash into database.
-        private byte[]? hash = new byte[130];
+        private byte[]? hash = new byte[128];
         //needs to be span<byte>
         public Span<byte> Hash => hash;
 

@@ -43,18 +43,18 @@ namespace RCMApi.Controllers
             if (_context.User == null)
                 return NotFound();
 
-            var comments = await _context.Comment.Include(z => z.User).Select(x => new CommentDTO
+            var comments = await _context.Comment.Include(z => z.User).Where(x => x.BlogId == blogId).Select(x => new CommentDTO
             {
                 Id = x.Id,
                 CommentText = x.CommentText,
                 BlogId = x.BlogId,
                 UserName = x.User.Name,
-                ParentId = x.ParentId,
                 Reply = x.Reply.Select(y => new ReplyDTO
                 {
                     CommentText = y.CommentText,
                     Id = y.Id,
-                    ParentId = y.ParentId,
+                    CommentId = y.CommentId,
+                    UserName = y.User.Name
                 }) as ICollection<ReplyDTO>}).ToListAsync();
 
             if (!comments.Any())
@@ -84,12 +84,30 @@ namespace RCMApi.Controllers
         // PUT: api/Comments/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutComment(int id, Comment comment)
+        public async Task<IActionResult> PutComment(int id, CommentDTO commentDTO)
         {
-            if (id != comment.Id)
+            if (id != commentDTO.Id)
             {
                 return BadRequest();
             }
+            if (_context.User == null || _context.Comment == null)
+                return NotFound();
+
+            var user = await _context.User.AsNoTracking().FirstOrDefaultAsync(c => c.Email == commentDTO.UserEmail);
+            var dbComment = await _context.Comment.FindAsync(id);
+
+            Comment comment = new Comment()
+            {
+                BlogId = commentDTO.BlogId,
+                CommentText = commentDTO.CommentText,
+                UserId = user.Id,
+                Id = id,
+                DateCreated = dbComment.DateCreated,
+                DateModified = DateTime.Now,
+                IsDeleted = dbComment.IsDeleted,
+                IsActive = dbComment.IsActive,
+                Reply = (ICollection<Reply>)commentDTO.Reply
+            };
 
             _context.Entry(comment).State = EntityState.Modified;
 
@@ -99,14 +117,6 @@ namespace RCMApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CommentExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
             }
 
             return NoContent();
@@ -134,7 +144,6 @@ namespace RCMApi.Controllers
             {
                 CommentText = commentDTO.CommentText,
                 BlogId = commentDTO.BlogId,
-                ParentId = commentDTO.ParentId,
                 UserId = user.Id,
             };
 
@@ -174,7 +183,6 @@ namespace RCMApi.Controllers
             {
                 CommentText = comment.CommentText,
                 BlogId = comment.BlogId,
-                ParentId = comment.ParentId
             };
     }
 }

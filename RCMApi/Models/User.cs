@@ -14,6 +14,7 @@
         public byte[]? HashedPassword { get; set; }
         public int? Iterations { get; set; }
         public int? MemoryLimit { get; set; }
+        public string? ProfilePicURL { get; set; }
 
         /*DTO Model integration
         public string? Secret { get; set; }*/
