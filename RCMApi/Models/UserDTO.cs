@@ -11,6 +11,5 @@
         public DateTime? DateOfBirth { get; set; }
         public bool? IsNewsletter { get; set; }
         public string? Password { get; set; }
-        public string? ProfilePicURL { get; set; }
     }
 }

@@ -61,10 +61,7 @@ namespace RCMAppApi.Controllers
                 return NotFound();
             var userAcc = await _context.User.FirstOrDefaultAsync(u => u.Email == user.Email);
 
-            if (userAcc == null)
-                return NotFound();
-
-            if (user.Password == null)
+            if (userAcc == null || user.Password == null)
                 return NotFound();
 
             byte[] passwordIn = Encoding.UTF8.GetBytes(user.Password);
@@ -159,7 +156,6 @@ namespace RCMAppApi.Controllers
                 Name = userDTO.Name,
                 Surname = userDTO.Surname,
                 DateOfBirth = userDTO.DateOfBirth,
-                ProfilePicURL = userDTO.ProfilePicURL,
                 HashedPassword = Encoding.UTF8.GetBytes(userDTO.Password)
             };
 
