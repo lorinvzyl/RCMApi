@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RCMApi.Models;
 using RCMAppApi.Models;
@@ -34,13 +29,22 @@ namespace RCMApi.Controllers
 
         // GET: api/Replies/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Reply>> GetReply(int id)
+        public async Task<ActionResult<IEnumerable<ReplyDTO>>> GetReply(int id)
         {
           if (_context.Reply == null)
           {
               return NotFound();
           }
-            var reply = await _context.Reply.FindAsync(id);
+            if (_context.User == null)
+                return NotFound();
+
+            var reply = await _context.Reply.Include(z => z.User).Where(x => x.CommentId == id).Select(r => new ReplyDTO
+            {
+                Id = r.Id,
+                CommentId = r.CommentId,
+                UserName = r.User.Name,
+                CommentText = r.CommentText
+            }).ToListAsync();
 
             if (reply == null)
             {
@@ -84,12 +88,28 @@ namespace RCMApi.Controllers
         // POST: api/Replies
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Reply>> PostReply(Reply reply)
+        public async Task<ActionResult<Reply>> PostReply(ReplyDTO replyDTO)
         {
           if (_context.Reply == null)
           {
               return Problem("Entity set 'DataContext.Reply'  is null.");
           }
+
+            if (_context.User == null)
+                return NotFound();
+
+            var user = await _context.User.FirstOrDefaultAsync(u => u.Email == replyDTO.UserEmail);
+
+            if (user == null)
+                return NotFound();
+
+            Reply reply = new()
+            {
+                CommentId = (int)replyDTO.CommentId,
+                CommentText = replyDTO.CommentText,
+                UserId = user.Id
+            };
+
             _context.Reply.Add(reply);
             await _context.SaveChangesAsync();
 
