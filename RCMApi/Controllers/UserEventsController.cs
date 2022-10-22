@@ -143,8 +143,8 @@ namespace RCMAppApi.Controllers
         }
 
         // POST: api/UserEvents/Attend
-        [HttpPost("Attend")]
-        public async Task<ActionResult> UserAttendance(UserEventDTO userEventDTO)
+        [HttpPost("Attend/{id}")]
+        public async Task<ActionResult> UserAttendance(UserEventDTO userEventDTO, int id)
         {
             if (_context.UserEvent == null)
                 return Problem("Entity set 'DataContext.UserEvents'  is null.");
@@ -159,7 +159,7 @@ namespace RCMAppApi.Controllers
             UserEvent userEvent = new()
             {
                 UserId = user.Id,
-                EventId = userEventDTO.EventId,
+                EventId = id,
                 IsAttended = userEventDTO.IsAttended
             };
 
