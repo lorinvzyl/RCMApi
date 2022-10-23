@@ -55,14 +55,14 @@ namespace RCMAppApi.Controllers
         }
 
         // GET: api/UserEvents/5 -> uses UserId
-        [HttpGet("{id}")]
-        public async Task<ActionResult<UserEventDTO>> GetUserEvent(int id)
+        [HttpGet("{id}/{userId}")]
+        public async Task<ActionResult<UserEventDTO>> GetUserEvent(int id, int userId)
         {
           if (_context.UserEvent == null || _context.User == null)
           {
               return NotFound();
           }
-            var userEvent = await _context.UserEvent.FirstOrDefaultAsync(u => u.UserId == id);
+            var userEvent = await _context.UserEvent.FirstOrDefaultAsync(u => u.UserId == userId && u.EventId == id);
             var user = await _context.User.FindAsync(userEvent.UserId);
 
             var _userEvent = new UserEventDTO()
